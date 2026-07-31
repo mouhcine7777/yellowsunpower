@@ -69,10 +69,10 @@ export default function HeroSection() {
       {/* Content */}
       <div className="relative z-10 mx-auto flex h-full w-full max-w-[1600px] flex-col justify-between px-6 pb-7 pt-24 sm:px-10 sm:pb-9 sm:pt-28 lg:px-14 lg:pb-10 lg:pt-32">
         {/* Middle: eyebrow + headline + CTAs */}
-        <div className="flex flex-1 flex-col justify-center gap-5 lg:max-w-2xl">
+        <div className="flex flex-1 flex-col items-center justify-center gap-5 text-center sm:items-start sm:text-left lg:max-w-2xl">
           <span
             className="inline-flex w-fit items-center gap-2 rounded-full border border-[#F2A93B]/30 bg-[#F2A93B]/10 px-4 py-1.5 text-[10px] font-semibold uppercase tracking-[0.2em] text-[#F2A93B] sm:text-[11px]"
-            
+
           >
             <span className="h-1.5 w-1.5 rounded-full bg-[#F2A93B]" />
             Énergie solaire · Maroc
@@ -96,7 +96,7 @@ export default function HeroSection() {
             sur-mesure pour les foyers et entreprises marocaines.
           </p>
 
-          <div className="flex flex-wrap items-center gap-3 sm:gap-4">
+          <div className="flex flex-wrap items-center justify-center gap-3 sm:justify-start sm:gap-4">
             <button
               type="button"
               onClick={openModal}
@@ -115,8 +115,8 @@ export default function HeroSection() {
         </div>
 
         {/* Bottom row: inline stats + scroll cue */}
-        <div className="flex flex-col gap-6">
-          <div className="flex flex-wrap gap-x-8 gap-y-2 xl:hidden">
+        <div className="flex flex-col items-center gap-6 sm:items-stretch">
+          <div className="hidden flex-wrap gap-x-8 gap-y-2 sm:flex xl:hidden">
             {stats.map((stat) => (
               <div key={stat.label} className="flex items-baseline gap-2">
                 <span

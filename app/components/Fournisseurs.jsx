@@ -45,16 +45,19 @@ const PARTNERS = [
 // vs. wide wordmarks). Rendering every one at the same *height* — with
 // width left to scale naturally from the real w/h above — is what makes
 // them read as a uniform, same-size set instead of some looking blown up
-// and others shrunk to fit a fixed box.
+// and others shrunk to fit a fixed box. The tile itself has no fixed
+// width either: its width is just the logo's rendered width, so the gap
+// between tiles is the *only* thing controlling the space between
+// logos, and that gap is constant for every pair.
 function LogoTile({ partner }) {
   return (
-    <div className="flex h-14 w-[150px] shrink-0 items-center justify-center sm:h-16 sm:w-[170px]">
+    <div className="flex h-14 shrink-0 items-center justify-center sm:h-16">
       <Image
         src={partner.logo}
         alt={partner.name}
         width={partner.width}
         height={partner.height}
-        className="h-9 w-auto max-w-full object-contain opacity-60 grayscale transition-all duration-300 hover:opacity-100 hover:grayscale-0 sm:h-10"
+        className="h-9 w-auto object-contain opacity-60 grayscale transition-all duration-300 hover:opacity-100 hover:grayscale-0 sm:h-10"
       />
     </div>
   );
