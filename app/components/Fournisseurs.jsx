@@ -92,7 +92,7 @@ export default function PartnersSection() {
             "linear-gradient(to right, transparent 0, black 5%, black 95%, transparent 100%)",
         }}
       >
-        <div className="ysp-partners-track flex w-max gap-4 px-6 sm:gap-5 sm:px-10 lg:px-14">
+        <div className="ysp-partners-track flex w-max gap-12 px-6 sm:gap-16 sm:px-10 lg:gap-20 lg:px-14">
           {PARTNERS.map((partner) => (
             <LogoTile key={`a-${partner.name}`} partner={partner} />
           ))}
