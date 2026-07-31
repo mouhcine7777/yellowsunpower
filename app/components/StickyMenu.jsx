@@ -1,0 +1,240 @@
+"use client";
+
+import Image from "next/image";
+import Link from "next/link";
+import { useEffect, useState } from "react";
+import { Montserrat } from "next/font/google";
+
+const montserrat = Montserrat({
+  subsets: ["latin"],
+  weight: ["500", "600", "700"],
+  variable: "--font-nav",
+});
+
+/*
+  Navbar — YellowSun Power
+  Same token system as the hero: charcoal #14120F, gold #F2A93B,
+  amber #C6660B, paper #F5EFE3, stone #A69C88.
+
+  Signature: a floating gold "pill" nav that sits detached from the
+  edges of the screen (not a full-width bar), turns from fully
+  transparent to a glass capsule once you scroll, with a link
+  indicator that slides underneath whichever item you're on/hovering.
+  Mobile gets a full-screen takeover with staggered link reveals and
+  the same ambient sun-glow used in the hero, so the brand feels
+  continuous rather than like a generic hamburger drawer.
+*/
+
+const LINKS = [
+  { label: "Accueil", href: "#accueil" },
+  { label: "Solutions", href: "#solutions" },
+  { label: "Réalisations", href: "#realisations" },
+  { label: "À propos", href: "#a-propos" },
+  { label: "Contact", href: "#contact" },
+];
+
+const LANGS = ["FR", "EN", "NL"];
+
+export default function Navbar() {
+  const [scrolled, setScrolled] = useState(false);
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const [hovered, setHovered] = useState(null);
+  const [lang, setLang] = useState("FR");
+  const [langOpen, setLangOpen] = useState(false);
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 24);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  // Lock body scroll while the mobile menu is open
+  useEffect(() => {
+    document.body.style.overflow = mobileOpen ? "hidden" : "";
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [mobileOpen]);
+
+  return (
+    <div className={`${montserrat.variable} font-[family-name:var(--font-nav)]`}>
+      <header className="fixed inset-x-0 top-0 z-50 flex justify-center px-4 pt-4 sm:px-8 sm:pt-6">
+        <div
+          className={`flex w-full max-w-6xl items-center justify-between rounded-full border transition-all duration-300 ${
+            scrolled
+              ? "border-white/10 bg-[#14120F]/75 px-4 py-2.5 shadow-[0_8px_30px_rgba(0,0,0,0.35)] backdrop-blur-xl sm:px-6"
+              : "border-transparent bg-transparent px-4 py-3 sm:px-6"
+          }`}
+        >
+          {/* Logo */}
+          <Link href="#accueil" className="flex shrink-0 items-center gap-2">
+            <span className="relative h-8 w-[120px] sm:h-9 sm:w-[136px]">
+              <Image
+                src="/logo.png"
+                alt="YellowSun Power"
+                fill
+                className="object-contain object-left"
+                priority
+              />
+            </span>
+          </Link>
+
+          {/* Desktop nav pill */}
+          <nav
+            className="hidden items-center gap-1 lg:flex"
+            onMouseLeave={() => setHovered(null)}
+          >
+            {LINKS.map((link) => (
+              <Link
+                key={link.href}
+                href={link.href}
+                onMouseEnter={() => setHovered(link.href)}
+                className="relative px-4 py-2 text-[13px] font-medium tracking-wide text-[#F5EFE3]/80 transition-colors duration-200 hover:text-[#F5EFE3]"
+                style={{ fontFamily: "var(--font-nav)" }}
+              >
+                {link.label}
+                <span
+                  className={`pointer-events-none absolute inset-x-3 -bottom-0.5 h-[1.5px] rounded-full bg-[#F2A93B] transition-opacity duration-200 ${
+                    hovered === link.href ? "opacity-100" : "opacity-0"
+                  }`}
+                />
+              </Link>
+            ))}
+          </nav>
+
+          {/* Right cluster: language + CTA (desktop) */}
+          <div className="hidden items-center gap-3 lg:flex">
+            <div className="relative">
+              <button
+                onClick={() => setLangOpen((v) => !v)}
+                className="flex items-center gap-1.5 rounded-full border border-white/10 px-3 py-1.5 text-xs font-semibold text-[#A69C88] transition-colors duration-200 hover:border-[#F2A93B]/40 hover:text-[#F5EFE3]"
+              >
+                {lang}
+                <svg
+                  width="9"
+                  height="9"
+                  viewBox="0 0 9 9"
+                  fill="none"
+                  className={`transition-transform duration-200 ${langOpen ? "rotate-180" : ""}`}
+                >
+                  <path d="M1 3L4.5 6.5L8 3" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" />
+                </svg>
+              </button>
+              {langOpen && (
+                <div className="absolute right-0 top-full mt-2 flex flex-col overflow-hidden rounded-xl border border-white/10 bg-[#14120F] shadow-xl">
+                  {LANGS.map((l) => (
+                    <button
+                      key={l}
+                      onClick={() => {
+                        setLang(l);
+                        setLangOpen(false);
+                      }}
+                      className={`px-4 py-2 text-left text-xs font-medium transition-colors duration-150 ${
+                        l === lang
+                          ? "bg-[#F2A93B]/10 text-[#F2A93B]"
+                          : "text-[#A69C88] hover:bg-white/5 hover:text-[#F5EFE3]"
+                      }`}
+                    >
+                      {l}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            <Link
+              href="#devis"
+              className="rounded-full bg-[#F2A93B] px-5 py-2 text-[13px] font-semibold text-[#14120F] transition-colors duration-200 hover:bg-[#C6660B]"
+            >
+              Devis gratuit
+            </Link>
+          </div>
+
+          {/* Mobile burger */}
+          <button
+            aria-label="Ouvrir le menu"
+            onClick={() => setMobileOpen(true)}
+            className="flex h-9 w-9 items-center justify-center rounded-full border border-white/10 lg:hidden"
+          >
+            <span className="relative flex h-3.5 w-4 flex-col justify-between">
+              <span className="h-[1.5px] w-full rounded-full bg-[#F5EFE3]" />
+              <span className="h-[1.5px] w-full rounded-full bg-[#F5EFE3]" />
+              <span className="h-[1.5px] w-3 self-end rounded-full bg-[#F2A93B]" />
+            </span>
+          </button>
+        </div>
+      </header>
+
+      {/* Mobile full-screen menu */}
+      <div
+        className={`fixed inset-0 z-[60] flex flex-col bg-[#14120F] transition-all duration-300 lg:hidden ${
+          mobileOpen ? "opacity-100" : "pointer-events-none opacity-0"
+        }`}
+      >
+        {/* ambient glow, consistent with hero */}
+        <div className="pointer-events-none absolute -right-32 -top-32 h-[380px] w-[380px] rounded-full bg-[radial-gradient(circle,rgba(242,169,59,0.3)_0%,rgba(242,169,59,0)_70%)] blur-2xl" />
+
+        <div className="flex items-center justify-between px-6 pt-6">
+          <span className="relative h-8 w-[120px]">
+            <Image src="/logo.png" alt="YellowSun Power" fill className="object-contain object-left" />
+          </span>
+          <button
+            aria-label="Fermer le menu"
+            onClick={() => setMobileOpen(false)}
+            className="flex h-9 w-9 items-center justify-center rounded-full border border-white/10"
+          >
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+              <path d="M1 1L13 13M13 1L1 13" stroke="#F5EFE3" strokeWidth="1.5" strokeLinecap="round" />
+            </svg>
+          </button>
+        </div>
+
+        <nav className="relative z-10 flex flex-1 flex-col justify-center gap-2 px-8">
+          {LINKS.map((link, i) => (
+            <Link
+              key={link.href}
+              href={link.href}
+              onClick={() => setMobileOpen(false)}
+              className={`border-b border-white/5 py-3.5 text-2xl font-medium text-[#F5EFE3] transition-all duration-300 ${
+                mobileOpen ? "translate-y-0 opacity-100" : "translate-y-4 opacity-0"
+              }`}
+              style={{
+                fontFamily: "var(--font-nav)",
+                transitionDelay: mobileOpen ? `${80 + i * 60}ms` : "0ms",
+              }}
+            >
+              {link.label}
+            </Link>
+          ))}
+        </nav>
+
+        <div className="relative z-10 flex items-center justify-between px-8 pb-10">
+          <div className="flex gap-2">
+            {LANGS.map((l) => (
+              <button
+                key={l}
+                onClick={() => setLang(l)}
+                className={`rounded-full border px-3 py-1.5 text-xs font-semibold transition-colors duration-200 ${
+                  l === lang
+                    ? "border-[#F2A93B]/40 bg-[#F2A93B]/10 text-[#F2A93B]"
+                    : "border-white/10 text-[#A69C88]"
+                }`}
+              >
+                {l}
+              </button>
+            ))}
+          </div>
+
+          <Link
+            href="#devis"
+            onClick={() => setMobileOpen(false)}
+            className="rounded-full bg-[#F2A93B] px-5 py-2.5 text-sm font-semibold text-[#14120F]"
+          >
+            Devis gratuit
+          </Link>
+        </div>
+      </div>
+    </div>
+  );
+}
