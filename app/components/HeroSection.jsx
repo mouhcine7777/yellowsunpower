@@ -34,7 +34,7 @@ export default function HeroSection() {
   const { openModal } = useQuoteModal();
   return (
     <section
-      className={`${montserrat.variable} font-[family-name:var(--font-nav)] relative isolate h-[100dvh] w-full overflow-hidden bg-[#14120F]`}
+      className={`${montserrat.variable} font-[family-name:var(--font-nav)] relative isolate h-[100svh] w-full overflow-hidden bg-[#14120F]`}
     >
       {/* Background photo */}
       <Image
