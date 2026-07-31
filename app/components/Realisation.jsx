@@ -78,6 +78,7 @@ function Card({ project }) {
         src={project.image}
         alt={`${project.title} — ${project.location}`}
         fill
+        sizes="(min-width: 1024px) 380px, (min-width: 640px) 330px, 280px"
         className="object-cover transition-transform duration-700 ease-out group-hover:scale-105"
       />
       <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[#14120F] via-[#14120F]/30 to-[#14120F]/10" />
@@ -123,7 +124,7 @@ export default function InstallationsSection() {
       className={`${montserrat.variable} font-[family-name:var(--font-nav)] relative w-full overflow-hidden bg-[#14120F] py-20 sm:py-28`}
     >
       {/* Header */}
-      <div className="mx-auto max-w-7xl px-6 sm:px-10 lg:px-14">
+      <div className="mx-auto max-w-[1600px] px-6 sm:px-10 lg:px-14">
         <span className="inline-flex w-fit items-center gap-2 rounded-full border border-[#F2A93B]/25 bg-[#F2A93B]/10 px-4 py-1.5 text-[10px] font-semibold uppercase tracking-[0.2em] text-[#F2A93B] sm:text-[11px]">
           <span className="h-1.5 w-1.5 rounded-full bg-[#F2A93B]" />
           Réalisations

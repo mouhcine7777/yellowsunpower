@@ -81,7 +81,7 @@ export default function AboutSection() {
     <section
       className={`${montserrat.variable} font-[family-name:var(--font-nav)] relative w-full bg-[#F5EFE3] py-20 sm:py-28`}
     >
-      <div className="mx-auto max-w-7xl px-6 sm:px-10 lg:px-14">
+      <div className="mx-auto max-w-[1600px] px-6 sm:px-10 lg:px-14">
         <div className="grid grid-cols-1 gap-14 lg:grid-cols-[1.05fr_1fr] lg:gap-10">
           {/* Left: intro copy */}
           <div>

@@ -31,27 +31,31 @@ const montserrat = Montserrat({
 });
 
 const PARTNERS = [
-  { name: "Fournisseur 1", logo: "/partners/partner-1.png" },
-  { name: "Fournisseur 2", logo: "/partners/partner-2.png" },
-  { name: "Fournisseur 3", logo: "/partners/partner-3.png" },
-  { name: "Fournisseur 4", logo: "/partners/partner-4.png" },
-  { name: "Fournisseur 5", logo: "/partners/partner-5.png" },
-  { name: "Fournisseur 6", logo: "/partners/partner-6.png" },
-  { name: "Fournisseur 7", logo: "/partners/partner-7.png" },
-  { name: "Fournisseur 8", logo: "/partners/partner-8.png" },
+  { name: "Fournisseur 1", logo: "/partners/partner-1.png", width: 231, height: 241 },
+  { name: "Fournisseur 2", logo: "/partners/partner-2.png", width: 355, height: 64 },
+  { name: "Fournisseur 3", logo: "/partners/partner-3.png", width: 301, height: 63 },
+  { name: "Fournisseur 4", logo: "/partners/partner-4.png", width: 379, height: 133 },
+  { name: "Fournisseur 5", logo: "/partners/partner-5.png", width: 400, height: 200 },
+  { name: "Fournisseur 6", logo: "/partners/partner-6.png", width: 400, height: 118 },
+  { name: "Fournisseur 7", logo: "/partners/partner-7.png", width: 383, height: 131 },
+  { name: "Fournisseur 8", logo: "/partners/partner-8.png", width: 389, height: 129 },
 ];
 
+// Logos ship at wildly different native aspect ratios (near-square marks
+// vs. wide wordmarks). Rendering every one at the same *height* — with
+// width left to scale naturally from the real w/h above — is what makes
+// them read as a uniform, same-size set instead of some looking blown up
+// and others shrunk to fit a fixed box.
 function LogoTile({ partner }) {
   return (
-    <div className="flex h-16 w-[150px] shrink-0 items-center justify-center sm:w-[170px]">
-      <span className="relative h-9 w-full opacity-60 grayscale transition-all duration-300 hover:opacity-100 hover:grayscale-0">
-        <Image
-          src={partner.logo}
-          alt={partner.name}
-          fill
-          className="object-contain"
-        />
-      </span>
+    <div className="flex h-14 w-[150px] shrink-0 items-center justify-center sm:h-16 sm:w-[170px]">
+      <Image
+        src={partner.logo}
+        alt={partner.name}
+        width={partner.width}
+        height={partner.height}
+        className="h-9 w-auto max-w-full object-contain opacity-60 grayscale transition-all duration-300 hover:opacity-100 hover:grayscale-0 sm:h-10"
+      />
     </div>
   );
 }
@@ -59,7 +63,7 @@ function LogoTile({ partner }) {
 export default function PartnersSection() {
   return (
     <section className={`${montserrat.variable} font-[family-name:var(--font-nav)] relative w-full overflow-hidden bg-[#F5EFE3] py-20 sm:py-24`}>
-      <div className="mx-auto max-w-7xl px-6 sm:px-10 lg:px-14">
+      <div className="mx-auto max-w-[1600px] px-6 sm:px-10 lg:px-14">
         <div className="max-w-xl">
           <span className="inline-flex w-fit items-center gap-2 rounded-full border border-[#F2A93B]/30 bg-[#F2A93B]/10 px-4 py-1.5 text-[10px] font-semibold uppercase tracking-[0.2em] text-[#C6660B] sm:text-[11px]">
             <span className="h-1.5 w-1.5 rounded-full bg-[#F2A93B]" />

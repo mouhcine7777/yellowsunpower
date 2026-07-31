@@ -1,5 +1,8 @@
+"use client";
+
 import Image from "next/image";
 import { Montserrat } from "next/font/google";
+import { useQuoteModal } from "./QuoteModalContext";
 
 /*
   Footer — YellowSun Power
@@ -73,6 +76,7 @@ const SOCIALS = [
 ];
 
 export default function Footer() {
+  const { openModal } = useQuoteModal();
   return (
     <footer
       className={`${montserrat.variable} font-[family-name:var(--font-nav)] relative w-full overflow-hidden bg-[#0C0A08]`}
@@ -81,7 +85,7 @@ export default function Footer() {
       <div className="h-px w-full bg-gradient-to-r from-transparent via-[#F2A93B]/50 to-transparent" />
 
       {/* CTA band */}
-      <div className="relative mx-auto max-w-7xl px-6 pb-16 pt-16 sm:px-10 sm:pb-20 sm:pt-20 lg:px-14">
+      <div className="relative mx-auto max-w-[1600px] px-6 pb-16 pt-16 sm:px-10 sm:pb-20 sm:pt-20 lg:px-14">
         <div className="flex flex-col items-start justify-between gap-8 border-b border-[#F5EFE3]/10 pb-14 sm:flex-row sm:items-end">
           <div>
             <span className="inline-flex w-fit items-center gap-2 rounded-full border border-[#F2A93B]/25 bg-[#F2A93B]/10 px-4 py-1.5 text-[10px] font-semibold uppercase tracking-[0.2em] text-[#F2A93B] sm:text-[11px]">
@@ -93,8 +97,9 @@ export default function Footer() {
             </h2>
           </div>
 
-          <a
-            href="#devis"
+          <button
+            type="button"
+            onClick={openModal}
             className="inline-flex w-fit shrink-0 items-center gap-2.5 rounded-full bg-[#F2A93B] px-7 py-3.5 text-sm font-semibold text-[#14120F] transition-colors duration-200 hover:bg-[#C6660B]"
           >
             Demander mon devis gratuit
@@ -107,7 +112,7 @@ export default function Footer() {
                 strokeLinejoin="round"
               />
             </svg>
-          </a>
+          </button>
         </div>
 
         {/* Columns */}
@@ -119,6 +124,7 @@ export default function Footer() {
                 src="/logo.png"
                 alt="YellowSun Power"
                 fill
+                sizes="136px"
                 className="object-contain object-left"
               />
             </span>
@@ -244,7 +250,7 @@ export default function Footer() {
       </div>
 
       {/* Bottom bar */}
-      <div className="relative mx-auto flex max-w-7xl flex-col items-center justify-center gap-4 border-t border-[#F5EFE3]/10 px-6 py-6 text-xs text-[#A69C88] sm:px-10 lg:px-14">
+      <div className="relative mx-auto flex max-w-[1600px] flex-col items-center justify-center gap-4 border-t border-[#F5EFE3]/10 px-6 py-6 text-xs text-[#A69C88] sm:px-10 lg:px-14">
         <p>© {new Date().getFullYear()} YellowSun Power. Tous droits réservés.</p>
       </div>
     </footer>

@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { Montserrat } from "next/font/google";
+import { useQuoteModal } from "./QuoteModalContext";
 
 const montserrat = Montserrat({
   subsets: ["latin"],
@@ -41,6 +42,7 @@ export default function Navbar() {
   const [hovered, setHovered] = useState(null);
   const [lang, setLang] = useState("FR");
   const [langOpen, setLangOpen] = useState(false);
+  const { openModal } = useQuoteModal();
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 24);
@@ -61,7 +63,7 @@ export default function Navbar() {
     <div className={`${montserrat.variable} font-[family-name:var(--font-nav)]`}>
       <header className="fixed inset-x-0 top-0 z-50 flex justify-center px-4 pt-4 sm:px-8 sm:pt-6">
         <div
-          className={`flex w-full max-w-6xl items-center justify-between rounded-full border transition-all duration-300 ${
+          className={`flex w-full max-w-[1600px] items-center justify-between rounded-full border transition-all duration-300 ${
             scrolled
               ? "border-white/10 bg-[#14120F]/75 px-4 py-2.5 shadow-[0_8px_30px_rgba(0,0,0,0.35)] backdrop-blur-xl sm:px-6"
               : "border-transparent bg-transparent px-4 py-3 sm:px-6"
@@ -74,6 +76,7 @@ export default function Navbar() {
                 src="/logo.png"
                 alt="YellowSun Power"
                 fill
+                sizes="136px"
                 className="object-contain object-left"
                 priority
               />
@@ -143,12 +146,13 @@ export default function Navbar() {
               )}
             </div>
 
-            <Link
-              href="#devis"
+            <button
+              type="button"
+              onClick={openModal}
               className="rounded-full bg-[#F2A93B] px-5 py-2 text-[13px] font-semibold text-[#14120F] transition-colors duration-200 hover:bg-[#C6660B]"
             >
               Devis gratuit
-            </Link>
+            </button>
           </div>
 
           {/* Mobile burger */}
@@ -177,7 +181,7 @@ export default function Navbar() {
 
         <div className="flex items-center justify-between px-6 pt-6">
           <span className="relative h-8 w-[120px]">
-            <Image src="/logo.png" alt="YellowSun Power" fill className="object-contain object-left" />
+            <Image src="/logo.png" alt="YellowSun Power" fill sizes="120px" className="object-contain object-left" />
           </span>
           <button
             aria-label="Fermer le menu"
@@ -226,13 +230,16 @@ export default function Navbar() {
             ))}
           </div>
 
-          <Link
-            href="#devis"
-            onClick={() => setMobileOpen(false)}
+          <button
+            type="button"
+            onClick={() => {
+              setMobileOpen(false);
+              openModal();
+            }}
             className="rounded-full bg-[#F2A93B] px-5 py-2.5 text-sm font-semibold text-[#14120F]"
           >
             Devis gratuit
-          </Link>
+          </button>
         </div>
       </div>
     </div>

@@ -1,5 +1,8 @@
+"use client";
+
 import Image from "next/image";
 import { Montserrat } from "next/font/google";
+import { useQuoteModal } from "./QuoteModalContext";
 
 /*
   Design tokens — YellowSun Power hero
@@ -28,6 +31,7 @@ const stats = [
 ];
 
 export default function HeroSection() {
+  const { openModal } = useQuoteModal();
   return (
     <section
       className={`${montserrat.variable} font-[family-name:var(--font-nav)] relative isolate h-[100dvh] w-full overflow-hidden bg-[#14120F]`}
@@ -38,12 +42,13 @@ export default function HeroSection() {
         alt=""
         fill
         priority
-        className="object-cover object-center opacity-[0.45]"
+        sizes="100vw"
+        className="object-cover object-center opacity-[0.7]"
       />
 
       {/* Legibility gradients */}
-      <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-[#14120F] via-[#14120F]/80 to-[#14120F]/25" />
-      <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[#14120F] via-[#14120F]/10 to-[#14120F]/50" />
+      <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-[#14120F] via-[#14120F]/55 to-[#14120F]/10" />
+      <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[#14120F] via-[#14120F]/5 to-[#14120F]/30" />
 
       {/* Ambient sun glow, top-right */}
       <div
@@ -62,7 +67,7 @@ export default function HeroSection() {
       />
 
       {/* Content */}
-      <div className="relative z-10 mx-auto flex h-full w-full max-w-7xl flex-col justify-between px-6 pb-7 pt-24 sm:px-10 sm:pb-9 sm:pt-28 lg:px-14 lg:pb-10 lg:pt-32">
+      <div className="relative z-10 mx-auto flex h-full w-full max-w-[1600px] flex-col justify-between px-6 pb-7 pt-24 sm:px-10 sm:pb-9 sm:pt-28 lg:px-14 lg:pb-10 lg:pt-32">
         {/* Middle: eyebrow + headline + CTAs */}
         <div className="flex flex-1 flex-col justify-center gap-5 lg:max-w-2xl">
           <span
@@ -92,13 +97,13 @@ export default function HeroSection() {
           </p>
 
           <div className="flex flex-wrap items-center gap-3 sm:gap-4">
-            <a
-              href="#devis"
+            <button
+              type="button"
+              onClick={openModal}
               className="rounded-full bg-[#F2A93B] px-6 py-3 text-sm font-semibold text-[#14120F] transition-colors duration-200 hover:bg-[#C6660B] sm:px-7 sm:py-3.5"
-              
             >
               Demander mon devis gratuit
-            </a>
+            </button>
             <a
               href="#realisations"
               className="rounded-full border border-[#F5EFE3]/25 px-6 py-3 text-sm font-semibold text-[#F5EFE3] transition-colors duration-200 hover:border-[#F5EFE3]/60 sm:px-7 sm:py-3.5"
