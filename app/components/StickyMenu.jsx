@@ -27,11 +27,11 @@ const montserrat = Montserrat({
 */
 
 const LINKS = [
-  { label: "Accueil", href: "#accueil" },
-  { label: "Solutions", href: "#solutions" },
-  { label: "Réalisations", href: "#realisations" },
-  { label: "À propos", href: "#a-propos" },
-  { label: "Contact", href: "#contact" },
+  { label: "Accueil", href: "/" },
+  { label: "Solutions", href: "/solutions" },
+  { label: "Réalisations", href: "/realisations" },
+  { label: "À propos", href: "/a-propos" },
+  { label: "Contact", href: "/contact" },
 ];
 
 const LANGS = ["FR", "EN", "NL"];
@@ -70,7 +70,7 @@ export default function Navbar() {
           }`}
         >
           {/* Logo */}
-          <Link href="#accueil" className="flex shrink-0 items-center gap-2">
+          <Link href="/#accueil" className="flex shrink-0 items-center gap-2">
             <span className="relative h-8 w-[120px] sm:h-9 sm:w-[136px]">
               <Image
                 src="/logo.png"

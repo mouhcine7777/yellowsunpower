@@ -79,6 +79,7 @@ const SEGMENTS = [
 export default function AboutSection() {
   return (
     <section
+      id="solutions"
       className={`${montserrat.variable} font-[family-name:var(--font-nav)] relative w-full bg-[#F5EFE3] py-20 sm:py-28`}
     >
       <div className="mx-auto max-w-[1600px] px-6 sm:px-10 lg:px-14">
@@ -102,7 +103,7 @@ export default function AboutSection() {
             </p>
 
             <a
-              href="#realisations"
+              href="/realisations"
               className="mt-9 inline-flex w-fit items-center gap-2.5 rounded-full bg-[#14120F] px-7 py-3.5 text-sm font-semibold text-[#F5EFE3] transition-all duration-200 hover:gap-3.5 hover:bg-[#F2A93B] hover:text-[#14120F]"
             >
               Découvrir nos réalisations

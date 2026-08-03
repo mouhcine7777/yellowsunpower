@@ -105,7 +105,7 @@ export default function HeroSection() {
               Demander mon devis gratuit
             </button>
             <a
-              href="#realisations"
+              href="/realisations"
               className="rounded-full border border-[#F5EFE3]/25 px-6 py-3 text-sm font-semibold text-[#F5EFE3] transition-colors duration-200 hover:border-[#F5EFE3]/60 sm:px-7 sm:py-3.5"
               
             >

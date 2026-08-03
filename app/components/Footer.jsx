@@ -24,11 +24,11 @@ const montserrat = Montserrat({
 });
 
 const NAV_LINKS = [
-  { label: "Accueil", href: "#accueil" },
-  { label: "Solutions", href: "#solutions" },
-  { label: "Réalisations", href: "#realisations" },
-  { label: "À propos", href: "#a-propos" },
-  { label: "Contact", href: "#contact" },
+  { label: "Accueil", href: "/#accueil" },
+  { label: "Solutions", href: "/solutions" },
+  { label: "Réalisations", href: "/realisations" },
+  { label: "À propos", href: "/a-propos" },
+  { label: "Contact", href: "/contact" },
 ];
 
 const SOLUTIONS = ["Villas", "Riads", "Hôtels", "Professionnels"];
@@ -79,6 +79,7 @@ export default function Footer() {
   const { openModal } = useQuoteModal();
   return (
     <footer
+      id="contact"
       className={`${montserrat.variable} font-[family-name:var(--font-nav)] relative w-full overflow-hidden bg-[#0C0A08]`}
     >
       {/* sunrise hairline */}
@@ -176,7 +177,7 @@ export default function Footer() {
               {SOLUTIONS.map((label) => (
                 <li key={label}>
                   <a
-                    href="#solutions"
+                    href="/solutions"
                     className="text-sm text-[#A69C88] transition-colors duration-200 hover:text-[#F2A93B]"
                   >
                     {label}

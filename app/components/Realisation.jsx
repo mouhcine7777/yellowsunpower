@@ -1,5 +1,6 @@
 import Image from "next/image";
 import { Montserrat } from "next/font/google";
+import { PROJECTS } from "../data/projects";
 
 /*
   Installations section — YellowSun Power
@@ -19,57 +20,6 @@ const montserrat = Montserrat({
   weight: ["500", "600", "700", "800"],
   variable: "--font-nav",
 });
-
-const PROJECTS = [
-  {
-    title: "Villa contemporaine",
-    location: "Tanger",
-    type: "Villa",
-    power: "18 kW",
-    desc: "Installation photovoltaïque 18 kW pour villa moderne avec optimisation énergétique complète.",
-    image: "/installations/villa-contemporaine-tanger.webp",
-  },
-  {
-    title: "Villa moderne",
-    location: "Tanger",
-    type: "Villa",
-    power: "17 kW",
-    desc: "Système solaire résidentiel 17 kW avec panneaux haute performance et autonomie renforcée.",
-    image: "/installations/villa-moderne-tanger.webp",
-  },
-  {
-    title: "Résidence premium",
-    location: "Rabat",
-    type: "Résidence",
-    power: "21 kW",
-    desc: "Installation solaire 21 kW répartie sur plusieurs toitures plates avec intégration architecturale discrète.",
-    image: "/installations/residence-premium-rabat.webp",
-  },
-  {
-    title: "Carport solaire",
-    location: "Tanger",
-    type: "Carport résidentiel",
-    power: "9 kW",
-    desc: "Carport photovoltaïque résidentiel 9 kW avec protection véhicule et production d'énergie solaire.",
-    image: "/installations/carport-solaire-tanger.webp",
-  },
-  {
-    title: "Installation industrielle",
-    location: "Casablanca",
-    type: "Carport industriel",
-    power: "90 kW",
-    desc: "Carport industriel solaire 90 kW conçu pour l'alimentation énergétique de site professionnel.",
-    image: "/installations/installation-industrielle-casablanca.webp",
-  },
-  {
-    title: "Riad traditionnel",
-    location: "Fès",
-    type: "Riad",
-    power: "5 kW",
-    desc: "Installation photovoltaïque 5 kW intégrée discrètement sur rooftop de riad dans la médina.",
-    image: "/installations/riad-traditionnel-fes.webp",
-  },
-];
 
 function Card({ project }) {
   return (
@@ -136,6 +86,22 @@ export default function InstallationsSection() {
           Chaque toiture est un cas particulier — dimensionnement,
           orientation et intégration pensés projet par projet.
         </p>
+
+        <a
+          href="/realisations"
+          className="group mt-7 inline-flex w-fit items-center gap-2.5 rounded-full border border-[#F5EFE3]/25 px-6 py-3 text-sm font-semibold text-[#F5EFE3] transition-colors duration-200 hover:border-[#F2A93B]/50 hover:text-[#F2A93B]"
+        >
+          Voir toutes nos réalisations
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" className="transition-transform duration-200 group-hover:translate-x-0.5">
+            <path
+              d="M2 7H12M12 7L8 3M12 7L8 11"
+              stroke="currentColor"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
+        </a>
       </div>
 
       {/* Auto-scrolling filmstrip — full bleed */}
