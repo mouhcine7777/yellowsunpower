@@ -165,11 +165,12 @@ export default function Navbar() {
             ))}
           </nav>
 
-          {/* Right cluster: language + CTA (desktop) */}
-          <div className="hidden items-center gap-3 lg:flex">
+          {/* Right cluster: language (all screens) + CTA (desktop) */}
+          <div className="flex items-center gap-2 sm:gap-3">
             <div className="relative">
               <button
                 onClick={() => setLangOpen((v) => !v)}
+                aria-label={t.openMenu === "Ouvrir le menu" ? "Choisir la langue" : "Choose language"}
                 className="flex items-center gap-1.5 rounded-full border border-white/10 px-3 py-1.5 text-xs font-semibold uppercase text-[#A69C88] transition-colors duration-200 hover:border-[#F2A93B]/40 hover:text-[#F5EFE3]"
               >
                 {locale}
@@ -208,24 +209,24 @@ export default function Navbar() {
             <button
               type="button"
               onClick={openModal}
-              className="rounded-full bg-[#F2A93B] px-5 py-2 text-[13px] font-semibold text-[#14120F] transition-colors duration-200 hover:bg-[#C6660B]"
+              className="hidden rounded-full bg-[#F2A93B] px-5 py-2 text-[13px] font-semibold text-[#14120F] transition-colors duration-200 hover:bg-[#C6660B] lg:inline-flex"
             >
               {t.cta}
             </button>
-          </div>
 
-          {/* Mobile burger */}
-          <button
-            aria-label={t.openMenu}
-            onClick={() => setMobileOpen(true)}
-            className="flex h-9 w-9 items-center justify-center rounded-full border border-white/10 lg:hidden"
-          >
-            <span className="relative flex h-3.5 w-4 flex-col justify-between">
-              <span className="h-[1.5px] w-full rounded-full bg-[#F5EFE3]" />
-              <span className="h-[1.5px] w-full rounded-full bg-[#F5EFE3]" />
-              <span className="h-[1.5px] w-3 self-end rounded-full bg-[#F2A93B]" />
-            </span>
-          </button>
+            {/* Mobile burger — grouped with the lang button so justify-between doesn't split them apart */}
+            <button
+              aria-label={t.openMenu}
+              onClick={() => setMobileOpen(true)}
+              className="flex h-9 w-9 items-center justify-center rounded-full border border-white/10 lg:hidden"
+            >
+              <span className="relative flex h-3.5 w-4 flex-col justify-between">
+                <span className="h-[1.5px] w-full rounded-full bg-[#F5EFE3]" />
+                <span className="h-[1.5px] w-full rounded-full bg-[#F5EFE3]" />
+                <span className="h-[1.5px] w-3 self-end rounded-full bg-[#F2A93B]" />
+              </span>
+            </button>
+          </div>
         </div>
       </header>
 
