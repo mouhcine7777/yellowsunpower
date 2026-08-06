@@ -3,22 +3,16 @@
 import Image from "next/image";
 import { useMemo, useState } from "react";
 import { Montserrat } from "next/font/google";
-import StickyMenu from "../components/StickyMenu";
-import Footer from "../components/Footer";
-import QuoteModal from "../components/QuoteModal";
-import { QuoteModalProvider, useQuoteModal } from "../components/QuoteModalContext";
-import { PROJECTS } from "../data/projects";
+import StickyMenu from "../../components/StickyMenu";
+import Footer from "../../components/Footer";
+import QuoteModal from "../../components/QuoteModal";
+import { QuoteModalProvider, useQuoteModal } from "../../components/QuoteModalContext";
+import { PROJECTS_EN } from "../../data/projects";
 
 /*
-  Réalisations — YellowSun Power
-  Same token family as the rest of the site: charcoal #14120F, gold
-  #F2A93B, amber #C6660B, paper #F5EFE3, stone #A69C88.
-
-  The homepage keeps its auto-scrolling teaser filmstrip; this page is
-  the full catalogue behind it — an intro with figures pulled straight
-  from the project data (no hardcoded numbers to drift out of sync),
-  a type filter, and a static grid of full case-study cards instead of
-  a marquee, since browsing a portfolio wants to be self-paced.
+  Projects — YellowSun Power (English mirror of app/realisations/page.tsx)
+  Same structure as the French version: an intro, a type filter, and a
+  static grid of full case-study cards built from PROJECTS_EN.
 */
 
 const montserrat = Montserrat({
@@ -27,7 +21,7 @@ const montserrat = Montserrat({
   variable: "--font-nav",
 });
 
-function ProjectCard({ project }: { project: (typeof PROJECTS)[number] }) {
+function ProjectCard({ project }: { project: (typeof PROJECTS_EN)[number] }) {
   return (
     <div className="group relative aspect-[3/4] w-full overflow-hidden rounded-3xl border border-[#F5EFE3]/10">
       <Image
@@ -81,7 +75,7 @@ function ClosingCTA() {
       onClick={openModal}
       className="inline-flex w-fit items-center gap-2.5 rounded-full bg-[#F2A93B] px-7 py-3.5 text-sm font-semibold text-[#14120F] transition-colors duration-200 hover:bg-[#C6660B]"
     >
-      Demander mon devis gratuit
+      Request my free quote
       <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
         <path
           d="M2 7H12M12 7L8 3M12 7L8 11"
@@ -95,16 +89,16 @@ function ClosingCTA() {
   );
 }
 
-export default function RealisationsPage() {
-  const [filter, setFilter] = useState("Tous");
+export default function ProjectsPageEN() {
+  const [filter, setFilter] = useState("All");
 
   const types = useMemo(
-    () => ["Tous", ...Array.from(new Set(PROJECTS.map((p) => p.type)))],
+    () => ["All", ...Array.from(new Set(PROJECTS_EN.map((p) => p.type)))],
     []
   );
 
   const filtered = useMemo(
-    () => (filter === "Tous" ? PROJECTS : PROJECTS.filter((p) => p.type === filter)),
+    () => (filter === "All" ? PROJECTS_EN : PROJECTS_EN.filter((p) => p.type === filter)),
     [filter]
   );
 
@@ -119,18 +113,18 @@ export default function RealisationsPage() {
             <div className="flex items-center gap-3">
               <span className="h-px w-8 bg-[#F2A93B]" />
               <span className="text-[11px] font-semibold uppercase tracking-[0.28em] text-[#F2A93B]">
-                Réalisations
+                Projects
               </span>
             </div>
 
             <h1 className="mt-6 max-w-2xl text-[clamp(2rem,3.4vw+1rem,3.6rem)] font-medium leading-[1.1] tracking-tight text-[#F5EFE3]">
-              Chaque toiture est un cas particulier.
+              Every roof is a unique case.
             </h1>
 
             <p className="mt-6 max-w-xl text-base leading-relaxed text-[#F5EFE3]/70 sm:text-lg">
-              Dimensionnement, orientation et intégration architecturale
-              pensés projet par projet, des villas de Tanger aux sites
-              industriels de Casablanca.
+              Sizing, orientation and architectural integration considered
+              project by project, from villas in Tangier to industrial
+              sites in Casablanca.
             </p>
           </div>
         </section>
@@ -167,7 +161,7 @@ export default function RealisationsPage() {
         <section className="w-full bg-[#14120F] py-24 sm:py-32">
           <div className="mx-auto flex max-w-[1600px] flex-col items-center gap-8 px-6 text-center sm:px-10">
             <h2 className="max-w-2xl text-[clamp(1.7rem,2.8vw+1rem,2.8rem)] font-semibold leading-[1.2] tracking-tight text-[#F5EFE3]">
-              Votre toiture mérite la même attention.
+              Your roof deserves the same attention.
             </h2>
             <ClosingCTA />
           </div>

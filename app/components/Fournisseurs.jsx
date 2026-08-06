@@ -1,5 +1,8 @@
+"use client";
+
 import Image from "next/image";
 import { Montserrat } from "next/font/google";
+import { useLocale } from "../lib/locale";
 
 /*
   Partners section — YellowSun Power
@@ -63,21 +66,44 @@ function LogoTile({ partner }) {
   );
 }
 
+const TEXT = {
+  fr: {
+    eyebrow: "Partenaires",
+    heading: "Nos fournisseurs partenaires",
+    paragraph:
+      "Des équipements sélectionnés auprès des meilleurs fabricants internationaux, pour des installations pensées pour durer.",
+  },
+  en: {
+    eyebrow: "Partners",
+    heading: "Our partner suppliers",
+    paragraph:
+      "Equipment sourced from the world's leading manufacturers, for installations built to last.",
+  },
+  nl: {
+    eyebrow: "Partners",
+    heading: "Onze partnerleveranciers",
+    paragraph:
+      "Apparatuur van 's werelds toonaangevende fabrikanten, voor installaties die gebouwd zijn om te blijven.",
+  },
+};
+
 export default function PartnersSection() {
+  const locale = useLocale();
+  const t = TEXT[locale];
+
   return (
     <section className={`${montserrat.variable} font-[family-name:var(--font-nav)] relative w-full overflow-hidden bg-[#F5EFE3] py-20 sm:py-24`}>
       <div className="mx-auto max-w-[1600px] px-6 sm:px-10 lg:px-14">
         <div className="max-w-xl">
           <span className="inline-flex w-fit items-center gap-2 rounded-full border border-[#F2A93B]/30 bg-[#F2A93B]/10 px-4 py-1.5 text-[10px] font-semibold uppercase tracking-[0.2em] text-[#C6660B] sm:text-[11px]">
             <span className="h-1.5 w-1.5 rounded-full bg-[#F2A93B]" />
-            Partenaires
+            {t.eyebrow}
           </span>
           <h2 className="mt-5 text-[clamp(1.7rem,2.5vw+1rem,2.6rem)] font-semibold leading-[1.15] tracking-tight text-[#14120F]">
-            Nos fournisseurs partenaires
+            {t.heading}
           </h2>
           <p className="mt-4 text-base leading-relaxed text-[#6B6355]">
-            Des équipements sélectionnés auprès des meilleurs fabricants
-            internationaux, pour des installations pensées pour durer.
+            {t.paragraph}
           </p>
         </div>
       </div>

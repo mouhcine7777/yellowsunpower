@@ -2,23 +2,17 @@
 
 import Image from "next/image";
 import { Montserrat } from "next/font/google";
-import StickyMenu from "../components/StickyMenu";
-import Footer from "../components/Footer";
-import QuoteModal from "../components/QuoteModal";
-import { QuoteModalProvider, useQuoteModal } from "../components/QuoteModalContext";
+import StickyMenu from "../../components/StickyMenu";
+import Footer from "../../components/Footer";
+import QuoteModal from "../../components/QuoteModal";
+import { QuoteModalProvider, useQuoteModal } from "../../components/QuoteModalContext";
 
 /*
-  À propos — YellowSun Power
-  Same token family as the rest of the site: charcoal #14120F, gold
-  #F2A93B, amber #C6660B, paper #F5EFE3, stone #A69C88, ink-soft
-  #6B6355, hairline #E4DCC8.
-
-  Structured as a short editorial read rather than a stat-card grid:
-  an opening statement, a two-column parcours/EDF spread, a full-bleed
-  pull-quote for the mission line, a credentials strip, a numbered
-  "de A à Z" process list, and a closing manifesto line before the
-  footer — the same dark/paper alternation used across the homepage,
-  just applied to a single long page instead of six sections.
+  Over ons — YellowSun Power (Dutch mirror of app/a-propos/page.tsx)
+  Same structure as the French/English versions: an opening statement,
+  a two-column track record/EDF spread, a full-bleed pull-quote for
+  the mission line, a credentials strip, a numbered process list, and
+  a closing manifesto line before the footer.
 */
 
 const montserrat = Montserrat({
@@ -28,32 +22,17 @@ const montserrat = Montserrat({
 });
 
 const CREDENTIALS = [
-  { value: "8+", label: "années d'expérience en France" },
-  { value: "EDF", label: "partenaire du programme national de transition énergétique" },
-  { value: "70%", label: "d'économies possibles sur la facture*" },
+  { value: "8+", label: "jaar ervaring in Frankrijk" },
+  { value: "EDF", label: "partner in het nationale energietransitieprogramma" },
+  { value: "70%", label: "mogelijke besparing op uw factuur*" },
 ];
 
 const PROCESS = [
-  {
-    n: "01",
-    title: "Étude technique personnalisée et gratuite",
-  },
-  {
-    n: "02",
-    title: "Installation clé en main",
-  },
-  {
-    n: "03",
-    title: "Matériel haut de gamme garanti",
-  },
-  {
-    n: "04",
-    title: "Intervention partout au Maroc",
-  },
-  {
-    n: "05",
-    title: "Jusqu'à 70 % d'économies sur votre facture d'électricité*",
-  },
+  { n: "01", title: "Gepersonaliseerd, gratis technisch onderzoek" },
+  { n: "02", title: "Sleutelklare installatie" },
+  { n: "03", title: "Gegarandeerde hoogwaardige apparatuur" },
+  { n: "04", title: "Service overal in Marokko" },
+  { n: "05", title: "Tot 70% besparing op uw elektriciteitsrekening*" },
 ];
 
 function ClosingCTA() {
@@ -64,7 +43,7 @@ function ClosingCTA() {
       onClick={openModal}
       className="inline-flex w-fit items-center gap-2.5 rounded-full bg-[#F2A93B] px-7 py-3.5 text-sm font-semibold text-[#14120F] transition-colors duration-200 hover:bg-[#C6660B]"
     >
-      Demander mon devis gratuit
+      Vraag mijn gratis offerte aan
       <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
         <path
           d="M2 7H12M12 7L8 3M12 7L8 11"
@@ -78,7 +57,7 @@ function ClosingCTA() {
   );
 }
 
-export default function AProposPage() {
+export default function OverOnsPageNL() {
   return (
     <QuoteModalProvider>
       <main className={`${montserrat.variable} font-[family-name:var(--font-nav)]`}>
@@ -101,28 +80,27 @@ export default function AProposPage() {
             <div className="flex items-center gap-3">
               <span className="h-px w-8 bg-[#F2A93B]" />
               <span className="text-[11px] font-semibold uppercase tracking-[0.28em] text-[#F2A93B]">
-                À propos
+                Over ons
               </span>
             </div>
 
             <h1 className="mt-6 max-w-3xl text-[clamp(2.1rem,3.6vw+1rem,3.8rem)] font-medium leading-[1.08] tracking-tight text-[#F5EFE3]">
-              Yellow Sun Power arrive au Maroc.
+              Yellow Sun Power komt naar Marokko.
             </h1>
 
             <p className="mt-6 max-w-xl text-base leading-relaxed text-[#F5EFE3]/70 sm:text-lg">
-              Après plus de 8 années d&rsquo;expérience en France, nous
-              mettons aujourd&rsquo;hui notre savoir-faire au service des
-              particuliers et des professionnels marocains.
+              Na meer dan 8 jaar ervaring in Frankrijk zetten wij onze
+              expertise nu in voor particulieren en bedrijven in Marokko.
             </p>
 
-            {/* France → Maroc, typographic, no icons or shapes */}
+            {/* Frankrijk → Marokko, typographic, no icons or shapes */}
             <div className="mt-14 flex flex-wrap items-center gap-6 border-t border-white/10 pt-8 sm:gap-10">
               <div className="flex flex-col gap-1.5">
                 <span className="text-[10px] font-semibold uppercase tracking-[0.25em] text-[#A69C88]">
-                  Depuis
+                  Sinds
                 </span>
                 <span className="text-lg font-semibold text-[#F5EFE3] sm:text-xl">
-                  France · 8+ ans
+                  Frankrijk · 8+ jaar
                 </span>
               </div>
               <svg width="22" height="14" viewBox="0 0 22 14" fill="none" className="shrink-0 text-[#F2A93B]/50">
@@ -136,44 +114,42 @@ export default function AProposPage() {
               </svg>
               <div className="flex flex-col gap-1.5">
                 <span className="text-[10px] font-semibold uppercase tracking-[0.25em] text-[#F2A93B]">
-                  Aujourd&rsquo;hui
+                  Vandaag
                 </span>
                 <span className="text-lg font-semibold text-[#F5EFE3] sm:text-xl">
-                  Maroc
+                  Marokko
                 </span>
               </div>
             </div>
           </div>
         </section>
 
-        {/* Parcours + EDF, editorial two-column */}
+        {/* Track record + EDF, editorial two-column */}
         <section className="w-full bg-[#F5EFE3] py-20 sm:py-28">
           <div className="mx-auto max-w-[1600px] px-6 sm:px-10 lg:px-14 xl:px-20">
             <div className="grid grid-cols-1 gap-14 lg:grid-cols-2 lg:gap-20">
               <div>
                 <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[#C6660B]">
-                  Notre parcours
+                  Ons trackrecord
                 </p>
                 <p className="mt-5 text-lg leading-relaxed text-[#3B362C] sm:text-xl">
-                  Au fil des années, nous avons réalisé des installations
-                  photovoltaïques de toutes tailles&nbsp;: maisons
-                  individuelles, bâtiments professionnels, commerces et
-                  projets sur mesure, en appliquant les plus hauts
-                  standards de qualité et de sécurité.
+                  Door de jaren heen hebben we fotovoltaïsche installaties
+                  van elke omvang gerealiseerd&nbsp;: particuliere
+                  woningen, bedrijfsgebouwen, winkels en projecten op
+                  maat, altijd volgens de hoogste kwaliteits- en
+                  veiligheidsnormen.
                 </p>
               </div>
 
               <div className="lg:border-l lg:border-[#E4DCC8] lg:pl-20">
                 <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[#C6660B]">
-                  Partenariat EDF
+                  Partnerschap met EDF
                 </p>
                 <p className="mt-5 text-lg leading-relaxed text-[#3B362C] sm:text-xl">
-                  Notre expertise s&rsquo;est également développée à
-                  travers notre participation, aux côtés d&rsquo;
+                  Onze expertise groeide ook via onze deelname, samen met{" "}
                   <span className="font-semibold text-[#14120F]">EDF</span>,
-                  au programme de transition énergétique visant à
-                  accompagner les foyers français dans leur passage à une
-                  énergie plus propre et plus économique.
+                  aan het energietransitieprogramma dat Franse huishoudens
+                  begeleidt naar schonere, voordeligere energie.
                 </p>
               </div>
             </div>
@@ -184,14 +160,15 @@ export default function AProposPage() {
         <section className="w-full bg-[#14120F] py-24 sm:py-32">
           <div className="mx-auto max-w-4xl px-6 text-center sm:px-10">
             <p className="text-xs font-semibold uppercase tracking-[0.25em] text-[#F2A93B]">
-              Notre ambition
+              Onze ambitie
             </p>
             <p className="mx-auto mt-8 h-px w-16 bg-[#F2A93B]/40" />
             <blockquote className="mt-8 text-[clamp(1.7rem,3vw+1rem,3.2rem)] font-medium leading-[1.2] tracking-tight text-[#F5EFE3]">
-              Rendre l&rsquo;énergie solaire{" "}
-              <span className="text-[#F2A93B]">accessible</span>,{" "}
-              <span className="text-[#F2A93B]">rentable</span> et{" "}
-              <span className="text-[#F2A93B]">fiable</span> pour tous.
+              Zonne-energie{" "}
+              <span className="text-[#F2A93B]">toegankelijk</span>,{" "}
+              <span className="text-[#F2A93B]">rendabel</span> en{" "}
+              <span className="text-[#F2A93B]">betrouwbaar</span> maken voor
+              iedereen.
             </blockquote>
           </div>
         </section>
@@ -217,22 +194,21 @@ export default function AProposPage() {
               ))}
             </div>
             <p className="mt-10 text-center text-[11px] text-[#6B6355]/70">
-              * Estimation moyenne, variable selon le profil de
-              consommation et la configuration de l&rsquo;installation.
+              * Gemiddelde schatting, varieert afhankelijk van
+              verbruiksprofiel en installatieconfiguratie.
             </p>
           </div>
         </section>
 
-        {/* De A à Z — numbered process */}
+        {/* Full-service process */}
         <section className="w-full bg-[#14120F] py-20 sm:py-28">
           <div className="mx-auto max-w-[1600px] px-6 sm:px-10 lg:px-14 xl:px-20">
             <div className="max-w-xl">
               <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[#F2A93B]">
-                De A à Z
+                Van A tot Z
               </p>
               <h2 className="mt-4 text-[clamp(1.7rem,2.6vw+1rem,2.6rem)] font-semibold leading-[1.15] tracking-tight text-[#F5EFE3]">
-                Un accompagnement complet, du premier contact à la mise en
-                service.
+                Volledige begeleiding, van eerste contact tot ingebruikname.
               </h2>
             </div>
 
@@ -258,12 +234,11 @@ export default function AProposPage() {
         <section className="w-full bg-[#14120F] pb-28 pt-4 sm:pb-36">
           <div className="mx-auto flex max-w-[1600px] flex-col items-center gap-8 px-6 text-center sm:px-10">
             <h2 className="max-w-2xl text-[clamp(1.7rem,2.8vw+1rem,2.8rem)] font-semibold leading-[1.2] tracking-tight text-[#F5EFE3]">
-              L&rsquo;avenir de l&rsquo;énergie commence aujourd&rsquo;hui.
+              De toekomst van energie begint vandaag.
             </h2>
             <ClosingCTA />
             <p className="text-sm text-[#A69C88]">
-              Yellow Sun Power · 🇲🇦 L&rsquo;expertise française au
-              service du Maroc.
+              Yellow Sun Power · 🇲🇦 Franse expertise, ten dienste van Marokko.
             </p>
           </div>
         </section>

@@ -2,9 +2,11 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Montserrat } from "next/font/google";
 import { useQuoteModal } from "./QuoteModalContext";
+import { useLocale, localizedPath } from "../lib/locale";
 
 const montserrat = Montserrat({
   subsets: ["latin"],
@@ -26,23 +28,56 @@ const montserrat = Montserrat({
   continuous rather than like a generic hamburger drawer.
 */
 
-const LINKS = [
-  { label: "Accueil", href: "/" },
-  { label: "Solutions", href: "/solutions" },
-  { label: "Réalisations", href: "/realisations" },
-  { label: "À propos", href: "/a-propos" },
-  { label: "Contact", href: "/contact" },
-];
+const TEXT = {
+  fr: {
+    links: [
+      { label: "Accueil", href: "/" },
+      { label: "Solutions", href: "/solutions" },
+      { label: "Réalisations", href: "/realisations" },
+      { label: "À propos", href: "/a-propos" },
+      { label: "Contact", href: "/contact" },
+    ],
+    cta: "Devis gratuit",
+    openMenu: "Ouvrir le menu",
+    closeMenu: "Fermer le menu",
+  },
+  en: {
+    links: [
+      { label: "Home", href: "/en" },
+      { label: "Solutions", href: "/en/solutions" },
+      { label: "Projects", href: "/en/projects" },
+      { label: "About", href: "/en/about" },
+      { label: "Contact", href: "/en/contact" },
+    ],
+    cta: "Free quote",
+    openMenu: "Open menu",
+    closeMenu: "Close menu",
+  },
+  nl: {
+    links: [
+      { label: "Home", href: "/nl" },
+      { label: "Oplossingen", href: "/nl/oplossingen" },
+      { label: "Projecten", href: "/nl/projecten" },
+      { label: "Over ons", href: "/nl/over-ons" },
+      { label: "Contact", href: "/nl/contact" },
+    ],
+    cta: "Gratis offerte",
+    openMenu: "Menu openen",
+    closeMenu: "Menu sluiten",
+  },
+};
 
-const LANGS = ["FR", "EN", "NL"];
+const LOCALES = ["fr", "en", "nl"];
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [hovered, setHovered] = useState(null);
-  const [lang, setLang] = useState("FR");
   const [langOpen, setLangOpen] = useState(false);
   const { openModal } = useQuoteModal();
+  const router = useRouter();
+  const locale = useLocale();
+  const t = TEXT[locale];
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 24);
@@ -59,6 +94,30 @@ export default function Navbar() {
     };
   }, [mobileOpen]);
 
+  const switchLocale = (target) => {
+    if (target === locale) return;
+    router.push(localizedPath(window.location.pathname, target));
+  };
+
+  const LangSwitch = ({ className }) => (
+    <div className={className}>
+      {LOCALES.map((l) => (
+        <button
+          key={l}
+          type="button"
+          onClick={() => switchLocale(l)}
+          className={`rounded-full border px-3 py-1.5 text-xs font-semibold uppercase transition-colors duration-200 ${
+            l === locale
+              ? "border-[#F2A93B]/40 bg-[#F2A93B]/10 text-[#F2A93B]"
+              : "border-white/10 text-[#A69C88] hover:text-[#F5EFE3]"
+          }`}
+        >
+          {l}
+        </button>
+      ))}
+    </div>
+  );
+
   return (
     <div className={`${montserrat.variable} font-[family-name:var(--font-nav)]`}>
       <header className="fixed inset-x-0 top-0 z-50 flex justify-center px-4 pt-4 sm:px-8 sm:pt-6">
@@ -70,7 +129,7 @@ export default function Navbar() {
           }`}
         >
           {/* Logo */}
-          <Link href="/#accueil" className="flex shrink-0 items-center gap-2">
+          <Link href={`${t.links[0].href}#accueil`} className="flex shrink-0 items-center gap-2">
             <span className="relative h-8 w-[120px] sm:h-9 sm:w-[136px]">
               <Image
                 src="/logo.png"
@@ -88,7 +147,7 @@ export default function Navbar() {
             className="hidden items-center gap-1 lg:flex"
             onMouseLeave={() => setHovered(null)}
           >
-            {LINKS.map((link) => (
+            {t.links.map((link) => (
               <Link
                 key={link.href}
                 href={link.href}
@@ -111,9 +170,9 @@ export default function Navbar() {
             <div className="relative">
               <button
                 onClick={() => setLangOpen((v) => !v)}
-                className="flex items-center gap-1.5 rounded-full border border-white/10 px-3 py-1.5 text-xs font-semibold text-[#A69C88] transition-colors duration-200 hover:border-[#F2A93B]/40 hover:text-[#F5EFE3]"
+                className="flex items-center gap-1.5 rounded-full border border-white/10 px-3 py-1.5 text-xs font-semibold uppercase text-[#A69C88] transition-colors duration-200 hover:border-[#F2A93B]/40 hover:text-[#F5EFE3]"
               >
-                {lang}
+                {locale}
                 <svg
                   width="9"
                   height="9"
@@ -126,15 +185,15 @@ export default function Navbar() {
               </button>
               {langOpen && (
                 <div className="absolute right-0 top-full mt-2 flex flex-col overflow-hidden rounded-xl border border-white/10 bg-[#14120F] shadow-xl">
-                  {LANGS.map((l) => (
+                  {LOCALES.map((l) => (
                     <button
                       key={l}
                       onClick={() => {
-                        setLang(l);
+                        switchLocale(l);
                         setLangOpen(false);
                       }}
-                      className={`px-4 py-2 text-left text-xs font-medium transition-colors duration-150 ${
-                        l === lang
+                      className={`px-4 py-2 text-left text-xs font-medium uppercase transition-colors duration-150 ${
+                        l === locale
                           ? "bg-[#F2A93B]/10 text-[#F2A93B]"
                           : "text-[#A69C88] hover:bg-white/5 hover:text-[#F5EFE3]"
                       }`}
@@ -151,13 +210,13 @@ export default function Navbar() {
               onClick={openModal}
               className="rounded-full bg-[#F2A93B] px-5 py-2 text-[13px] font-semibold text-[#14120F] transition-colors duration-200 hover:bg-[#C6660B]"
             >
-              Devis gratuit
+              {t.cta}
             </button>
           </div>
 
           {/* Mobile burger */}
           <button
-            aria-label="Ouvrir le menu"
+            aria-label={t.openMenu}
             onClick={() => setMobileOpen(true)}
             className="flex h-9 w-9 items-center justify-center rounded-full border border-white/10 lg:hidden"
           >
@@ -184,7 +243,7 @@ export default function Navbar() {
             <Image src="/logo.png" alt="YellowSun Power" fill sizes="120px" className="object-contain object-left" />
           </span>
           <button
-            aria-label="Fermer le menu"
+            aria-label={t.closeMenu}
             onClick={() => setMobileOpen(false)}
             className="flex h-9 w-9 items-center justify-center rounded-full border border-white/10"
           >
@@ -195,7 +254,7 @@ export default function Navbar() {
         </div>
 
         <nav className="relative z-10 flex flex-1 flex-col justify-center gap-2 px-8">
-          {LINKS.map((link, i) => (
+          {t.links.map((link, i) => (
             <Link
               key={link.href}
               href={link.href}
@@ -214,21 +273,7 @@ export default function Navbar() {
         </nav>
 
         <div className="relative z-10 flex items-center justify-between px-8 pb-10">
-          <div className="flex gap-2">
-            {LANGS.map((l) => (
-              <button
-                key={l}
-                onClick={() => setLang(l)}
-                className={`rounded-full border px-3 py-1.5 text-xs font-semibold transition-colors duration-200 ${
-                  l === lang
-                    ? "border-[#F2A93B]/40 bg-[#F2A93B]/10 text-[#F2A93B]"
-                    : "border-white/10 text-[#A69C88]"
-                }`}
-              >
-                {l}
-              </button>
-            ))}
-          </div>
+          <LangSwitch className="flex gap-2" />
 
           <button
             type="button"
@@ -238,7 +283,7 @@ export default function Navbar() {
             }}
             className="rounded-full bg-[#F2A93B] px-5 py-2.5 text-sm font-semibold text-[#14120F]"
           >
-            Devis gratuit
+            {t.cta}
           </button>
         </div>
       </div>

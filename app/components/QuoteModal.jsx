@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Montserrat } from "next/font/google";
 import { useQuoteModal } from "./QuoteModalContext";
+import { useLocale } from "../lib/locale";
 
 /*
   Quote request modal — YellowSun Power
@@ -14,7 +15,7 @@ import { useQuoteModal } from "./QuoteModalContext";
   stack of pills) to keep the form short enough to fit without
   scrolling on desktop; the dialog itself is wide with a two-column
   layout for the same reason. On submit, the lead is handed off to
-  WhatsApp — pre-filled with every answer — since that's the channel
+  WhatsApp, pre-filled with every answer, since that's the channel
   already surfaced in the footer and requires no backend.
 */
 
@@ -26,23 +27,165 @@ const montserrat = Montserrat({
 
 const WHATSAPP_NUMBER = "212649139720";
 
-const PROJECT_TYPES = ["Villa", "Riad", "Hôtel", "Usine", "Entreprise", "Carport"];
-
 const BUDGETS = [
   "1000 - 2500 MAD",
   "2500 - 5000 MAD",
   "5000 - 7500 MAD",
   "7500 - 10 000 MAD",
-  "Plus de 10 000 MAD",
 ];
 
-const EQUIPMENT = [
-  "Climatisation",
-  "Piscine",
-  "Pompe à chaleur piscine",
-  "Chauffe-eau électrique",
-  "Sauna/Hammam",
-];
+const TEXT = {
+  fr: {
+    projectTypes: ["Villa", "Riad", "Hôtel", "Usine", "Entreprise", "Carport"],
+    budgets: [...BUDGETS, "Plus de 10 000 MAD"],
+    equipment: [
+      "Climatisation",
+      "Piscine",
+      "Pompe à chaleur piscine",
+      "Chauffe-eau électrique",
+      "Sauna/Hammam",
+    ],
+    close: "Fermer",
+    badge: "Sans engagement",
+    title: "Étude solaire gratuite",
+    subtitle:
+      "Recevez une estimation gratuite et sans engagement adaptée à votre consommation électrique.",
+    projectTypeLabel: "Quel est votre type de projet ?",
+    cityLabel: "Dans quelle ville se situe votre projet ?",
+    cityPlaceholder: "Ex. Marrakech",
+    budgetLabel: "Quel est votre budget électrique mensuel ?",
+    budgetPlaceholder: "Sélectionnez un budget",
+    equipmentLabel: "Quels équipements électriques possédez-vous dans votre propriété ?",
+    nameLabel: "Nom complet",
+    namePlaceholder: "Votre nom et prénom",
+    phoneLabel: "Téléphone / WhatsApp",
+    phonePlaceholder: "+212 6XX-XXXXXX",
+    emailLabel: "Adresse email",
+    emailPlaceholder: "vous@email.com",
+    privacyNote: "Vos données ne sont utilisées que pour préparer votre estimation.",
+    submit: "Recevoir mon étude gratuite",
+    successTitle: "Demande envoyée",
+    successBody:
+      "Votre demande a été transmise sur WhatsApp. Un conseiller YellowSun Power revient vers vous sous 48h avec votre estimation.",
+    errors: {
+      projectType: "Sélectionnez un type de projet.",
+      city: "Indiquez votre ville.",
+      budget: "Sélectionnez un budget.",
+      fullName: "Indiquez votre nom complet.",
+      phone: "Indiquez un numéro de téléphone.",
+    },
+    waLines: (form) => [
+      "Nouvelle demande d'étude solaire gratuite",
+      `Type de projet : ${form.projectType}`,
+      `Ville : ${form.city}`,
+      `Budget électrique mensuel : ${form.budget}`,
+      `Équipements : ${form.equipment.length ? form.equipment.join(", ") : "Aucun"}`,
+      `Nom complet : ${form.fullName}`,
+      `Téléphone / WhatsApp : ${form.phone}`,
+      form.email.trim() ? `Email : ${form.email}` : null,
+    ],
+  },
+  en: {
+    projectTypes: ["Villa", "Riad", "Hotel", "Factory", "Business", "Carport"],
+    budgets: [...BUDGETS, "Over 10,000 MAD"],
+    equipment: [
+      "Air conditioning",
+      "Pool",
+      "Pool heat pump",
+      "Electric water heater",
+      "Sauna/Hammam",
+    ],
+    close: "Close",
+    badge: "No commitment",
+    title: "Free solar assessment",
+    subtitle:
+      "Get a free, no-commitment estimate tailored to your electricity consumption.",
+    projectTypeLabel: "What type of project is this?",
+    cityLabel: "Which city is your project in?",
+    cityPlaceholder: "E.g. Marrakech",
+    budgetLabel: "What is your monthly electricity budget?",
+    budgetPlaceholder: "Select a budget",
+    equipmentLabel: "Which electrical equipment do you have on your property?",
+    nameLabel: "Full name",
+    namePlaceholder: "Your first and last name",
+    phoneLabel: "Phone / WhatsApp",
+    phonePlaceholder: "+212 6XX-XXXXXX",
+    emailLabel: "Email address",
+    emailPlaceholder: "you@email.com",
+    privacyNote: "Your data is only used to prepare your estimate.",
+    submit: "Get my free assessment",
+    successTitle: "Request sent",
+    successBody:
+      "Your request has been sent via WhatsApp. A YellowSun Power advisor will get back to you within 48h with your estimate.",
+    errors: {
+      projectType: "Select a project type.",
+      city: "Enter your city.",
+      budget: "Select a budget.",
+      fullName: "Enter your full name.",
+      phone: "Enter a phone number.",
+    },
+    waLines: (form) => [
+      "New free solar assessment request",
+      `Project type: ${form.projectType}`,
+      `City: ${form.city}`,
+      `Monthly electricity budget: ${form.budget}`,
+      `Equipment: ${form.equipment.length ? form.equipment.join(", ") : "None"}`,
+      `Full name: ${form.fullName}`,
+      `Phone / WhatsApp: ${form.phone}`,
+      form.email.trim() ? `Email: ${form.email}` : null,
+    ],
+  },
+  nl: {
+    projectTypes: ["Villa", "Riad", "Hotel", "Fabriek", "Bedrijf", "Carport"],
+    budgets: [...BUDGETS, "Meer dan 10.000 MAD"],
+    equipment: [
+      "Airconditioning",
+      "Zwembad",
+      "Warmtepomp zwembad",
+      "Elektrische boiler",
+      "Sauna/Hammam",
+    ],
+    close: "Sluiten",
+    badge: "Vrijblijvend",
+    title: "Gratis zonne-onderzoek",
+    subtitle:
+      "Ontvang een gratis, vrijblijvende schatting op maat van uw elektriciteitsverbruik.",
+    projectTypeLabel: "Wat voor project is dit?",
+    cityLabel: "In welke stad bevindt uw project zich?",
+    cityPlaceholder: "Bijv. Marrakech",
+    budgetLabel: "Wat is uw maandelijkse elektriciteitsbudget?",
+    budgetPlaceholder: "Selecteer een budget",
+    equipmentLabel: "Welke elektrische apparatuur heeft u in uw woning?",
+    nameLabel: "Volledige naam",
+    namePlaceholder: "Uw voor- en achternaam",
+    phoneLabel: "Telefoon / WhatsApp",
+    phonePlaceholder: "+212 6XX-XXXXXX",
+    emailLabel: "E-mailadres",
+    emailPlaceholder: "u@email.com",
+    privacyNote: "Uw gegevens worden alleen gebruikt om uw schatting voor te bereiden.",
+    submit: "Ontvang mijn gratis onderzoek",
+    successTitle: "Aanvraag verzonden",
+    successBody:
+      "Uw aanvraag is via WhatsApp verzonden. Een adviseur van YellowSun Power neemt binnen 48u contact met u op met uw schatting.",
+    errors: {
+      projectType: "Selecteer een projecttype.",
+      city: "Vul uw stad in.",
+      budget: "Selecteer een budget.",
+      fullName: "Vul uw volledige naam in.",
+      phone: "Vul een telefoonnummer in.",
+    },
+    waLines: (form) => [
+      "Nieuwe aanvraag voor gratis zonne-onderzoek",
+      `Projecttype: ${form.projectType}`,
+      `Stad: ${form.city}`,
+      `Maandelijks elektriciteitsbudget: ${form.budget}`,
+      `Apparatuur: ${form.equipment.length ? form.equipment.join(", ") : "Geen"}`,
+      `Volledige naam: ${form.fullName}`,
+      `Telefoon / WhatsApp: ${form.phone}`,
+      form.email.trim() ? `E-mail: ${form.email}` : null,
+    ],
+  },
+};
 
 const initialForm = {
   projectType: "",
@@ -148,6 +291,8 @@ export default function QuoteModal() {
   const [form, setForm] = useState(initialForm);
   const [errors, setErrors] = useState({});
   const [submitted, setSubmitted] = useState(false);
+  const locale = useLocale();
+  const t = TEXT[locale];
 
   // Lock body scroll + close on Escape while open
   useEffect(() => {
@@ -185,11 +330,11 @@ export default function QuoteModal() {
 
   const validate = () => {
     const next = {};
-    if (!form.projectType) next.projectType = "Sélectionnez un type de projet.";
-    if (!form.city.trim()) next.city = "Indiquez votre ville.";
-    if (!form.budget) next.budget = "Sélectionnez un budget.";
-    if (!form.fullName.trim()) next.fullName = "Indiquez votre nom complet.";
-    if (!form.phone.trim()) next.phone = "Indiquez un numéro de téléphone.";
+    if (!form.projectType) next.projectType = t.errors.projectType;
+    if (!form.city.trim()) next.city = t.errors.city;
+    if (!form.budget) next.budget = t.errors.budget;
+    if (!form.fullName.trim()) next.fullName = t.errors.fullName;
+    if (!form.phone.trim()) next.phone = t.errors.phone;
     setErrors(next);
     return Object.keys(next).length === 0;
   };
@@ -198,17 +343,7 @@ export default function QuoteModal() {
     e.preventDefault();
     if (!validate()) return;
 
-    const lines = [
-      "Nouvelle demande d'étude solaire gratuite",
-      `Type de projet : ${form.projectType}`,
-      `Ville : ${form.city}`,
-      `Budget électrique mensuel : ${form.budget}`,
-      `Équipements : ${form.equipment.length ? form.equipment.join(", ") : "Aucun"}`,
-      `Nom complet : ${form.fullName}`,
-      `Téléphone / WhatsApp : ${form.phone}`,
-      form.email.trim() ? `Email : ${form.email}` : null,
-    ].filter(Boolean);
-
+    const lines = t.waLines(form).filter(Boolean);
     const url = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(lines.join("\n"))}`;
     window.open(url, "_blank", "noopener,noreferrer");
     setSubmitted(true);
@@ -240,7 +375,7 @@ export default function QuoteModal() {
         {/* Close button */}
         <button
           type="button"
-          aria-label="Fermer"
+          aria-label={t.close}
           onClick={closeModal}
           className="absolute right-4 top-4 z-30 flex h-9 w-9 items-center justify-center rounded-full border border-white/10 bg-white/5 text-[#F5EFE3]/70 transition-colors duration-200 hover:border-[#F2A93B]/40 hover:text-[#F2A93B]"
         >
@@ -256,18 +391,16 @@ export default function QuoteModal() {
                 <path d="M4 12.5L9.5 18L20 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
             </div>
-            <h3 className="text-xl font-semibold text-[#F5EFE3]">Demande envoyée</h3>
+            <h3 className="text-xl font-semibold text-[#F5EFE3]">{t.successTitle}</h3>
             <p className="max-w-xs text-sm leading-relaxed text-[#A69C88]">
-              Votre demande a été transmise sur WhatsApp. Un conseiller
-              YellowSun Power revient vers vous sous 48h avec votre
-              estimation.
+              {t.successBody}
             </p>
             <button
               type="button"
               onClick={closeModal}
               className="mt-2 rounded-full bg-[#F2A93B] px-6 py-2.5 text-sm font-semibold text-[#14120F] transition-colors duration-200 hover:bg-[#C6660B]"
             >
-              Fermer
+              {t.close}
             </button>
           </div>
         ) : (
@@ -276,17 +409,16 @@ export default function QuoteModal() {
             <div className="relative border-b border-white/10 px-6 pb-5 pt-7 sm:px-8 sm:pt-8">
               <span className="inline-flex w-fit items-center gap-2 rounded-full border border-[#F2A93B]/30 bg-[#F2A93B]/10 px-3.5 py-1 text-[10px] font-semibold uppercase tracking-[0.2em] text-[#F2A93B]">
                 <span className="h-1.5 w-1.5 rounded-full bg-[#F2A93B]" />
-                Sans engagement
+                {t.badge}
               </span>
               <h2
                 id="quote-modal-title"
                 className="mt-3 pr-8 text-xl font-semibold leading-tight text-[#F5EFE3] sm:text-2xl"
               >
-                Étude solaire gratuite
+                {t.title}
               </h2>
               <p className="mt-1.5 text-sm leading-relaxed text-[#A69C88]">
-                Recevez une estimation gratuite et sans engagement adaptée
-                à votre consommation électrique.
+                {t.subtitle}
               </p>
             </div>
 
@@ -299,10 +431,10 @@ export default function QuoteModal() {
                 {/* Project type */}
                 <fieldset>
                   <legend className="text-xs font-semibold uppercase tracking-[0.1em] text-[#F5EFE3]/80">
-                    Quel est votre type de projet ?<span className="text-[#F2A93B]">*</span>
+                    {t.projectTypeLabel}<span className="text-[#F2A93B]">*</span>
                   </legend>
                   <div className="mt-3 flex flex-wrap gap-2">
-                    {PROJECT_TYPES.map((type) => (
+                    {t.projectTypes.map((type) => (
                       <button
                         key={type}
                         type="button"
@@ -327,7 +459,7 @@ export default function QuoteModal() {
                       htmlFor="qm-city"
                       className="block text-[10px] font-semibold uppercase leading-snug tracking-[0.06em] text-[#F5EFE3]/80 lg:whitespace-nowrap"
                     >
-                      Dans quelle ville se situe votre projet ?
+                      {t.cityLabel}
                       <span className="text-[#F2A93B]">*</span>
                     </label>
                     <input
@@ -335,7 +467,7 @@ export default function QuoteModal() {
                       type="text"
                       value={form.city}
                       onChange={(e) => setForm((f) => ({ ...f, city: e.target.value }))}
-                      placeholder="Ex. Marrakech"
+                      placeholder={t.cityPlaceholder}
                       className="mt-2.5 w-full rounded-xl border border-white/15 bg-white/[0.03] px-4 py-2.5 text-sm text-[#F5EFE3] placeholder:text-[#A69C88]/60 outline-none transition-colors duration-150 focus:border-[#F2A93B]/60"
                     />
                     {fieldError("city")}
@@ -345,12 +477,12 @@ export default function QuoteModal() {
                     id="qm-budget"
                     label={
                       <>
-                        Quel est votre budget électrique mensuel ?
+                        {t.budgetLabel}
                         <span className="text-[#F2A93B]">*</span>
                       </>
                     }
-                    placeholder="Sélectionnez un budget"
-                    options={BUDGETS}
+                    placeholder={t.budgetPlaceholder}
+                    options={t.budgets}
                     value={form.budget}
                     onChange={(budget) => setForm((f) => ({ ...f, budget }))}
                     error={errors.budget}
@@ -360,11 +492,10 @@ export default function QuoteModal() {
                 {/* Equipment */}
                 <fieldset>
                   <legend className="text-xs font-semibold uppercase tracking-[0.1em] text-[#F5EFE3]/80">
-                    Quels équipements électriques possédez-vous dans votre
-                    propriété ?
+                    {t.equipmentLabel}
                   </legend>
                   <div className="mt-3 flex flex-wrap gap-2">
-                    {EQUIPMENT.map((item) => {
+                    {t.equipment.map((item) => {
                       const checked = form.equipment.includes(item);
                       return (
                         <button
@@ -402,14 +533,14 @@ export default function QuoteModal() {
                       htmlFor="qm-name"
                       className="text-xs font-semibold uppercase tracking-[0.1em] text-[#F5EFE3]/80"
                     >
-                      Nom complet<span className="text-[#F2A93B]">*</span>
+                      {t.nameLabel}<span className="text-[#F2A93B]">*</span>
                     </label>
                     <input
                       id="qm-name"
                       type="text"
                       value={form.fullName}
                       onChange={(e) => setForm((f) => ({ ...f, fullName: e.target.value }))}
-                      placeholder="Votre nom et prénom"
+                      placeholder={t.namePlaceholder}
                       className="mt-2.5 w-full rounded-xl border border-white/15 bg-white/[0.03] px-4 py-2.5 text-sm text-[#F5EFE3] placeholder:text-[#A69C88]/60 outline-none transition-colors duration-150 focus:border-[#F2A93B]/60"
                     />
                     {fieldError("fullName")}
@@ -420,14 +551,14 @@ export default function QuoteModal() {
                       htmlFor="qm-phone"
                       className="text-xs font-semibold uppercase tracking-[0.1em] text-[#F5EFE3]/80"
                     >
-                      Téléphone / WhatsApp<span className="text-[#F2A93B]">*</span>
+                      {t.phoneLabel}<span className="text-[#F2A93B]">*</span>
                     </label>
                     <input
                       id="qm-phone"
                       type="tel"
                       value={form.phone}
                       onChange={(e) => setForm((f) => ({ ...f, phone: e.target.value }))}
-                      placeholder="+212 6XX-XXXXXX"
+                      placeholder={t.phonePlaceholder}
                       className="mt-2.5 w-full rounded-xl border border-white/15 bg-white/[0.03] px-4 py-2.5 text-sm text-[#F5EFE3] placeholder:text-[#A69C88]/60 outline-none transition-colors duration-150 focus:border-[#F2A93B]/60"
                     />
                     {fieldError("phone")}
@@ -438,14 +569,14 @@ export default function QuoteModal() {
                       htmlFor="qm-email"
                       className="text-xs font-semibold uppercase tracking-[0.1em] text-[#F5EFE3]/80"
                     >
-                      Adresse email
+                      {t.emailLabel}
                     </label>
                     <input
                       id="qm-email"
                       type="email"
                       value={form.email}
                       onChange={(e) => setForm((f) => ({ ...f, email: e.target.value }))}
-                      placeholder="vous@email.com"
+                      placeholder={t.emailPlaceholder}
                       className="mt-2.5 w-full rounded-xl border border-white/15 bg-white/[0.03] px-4 py-2.5 text-sm text-[#F5EFE3] placeholder:text-[#A69C88]/60 outline-none transition-colors duration-150 focus:border-[#F2A93B]/60"
                     />
                   </div>
@@ -455,14 +586,13 @@ export default function QuoteModal() {
               {/* Footer actions */}
               <div className="mt-7 flex flex-col gap-3 border-t border-white/10 pt-5 sm:flex-row sm:items-center sm:justify-between">
                 <p className="text-[11px] leading-relaxed text-[#A69C88]/80">
-                  Vos données ne sont utilisées que pour préparer votre
-                  estimation.
+                  {t.privacyNote}
                 </p>
                 <button
                   type="submit"
                   className="inline-flex shrink-0 items-center justify-center gap-2 rounded-full bg-[#F2A93B] px-6 py-3 text-sm font-semibold text-[#14120F] transition-colors duration-200 hover:bg-[#C6660B]"
                 >
-                  Recevoir mon étude gratuite
+                  {t.submit}
                   <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
                     <path d="M2 7H12M12 7L8 3M12 7L8 11" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
                   </svg>

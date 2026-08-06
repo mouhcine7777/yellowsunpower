@@ -1,6 +1,9 @@
+"use client";
+
 import Image from "next/image";
 import { Montserrat } from "next/font/google";
-import { PROJECTS } from "../data/projects";
+import { PROJECTS, PROJECTS_EN, PROJECTS_NL } from "../data/projects";
+import { useLocale } from "../lib/locale";
 
 /*
   Installations section — YellowSun Power
@@ -12,7 +15,7 @@ import { PROJECTS } from "../data/projects";
   exactly -50% of track width returns to the starting frame). Pauses
   on hover/focus so it's actually readable, fades at both edges via a
   mask so cards never crop hard against the viewport, and respects
-  prefers-reduced-motion. Pure CSS — no JS/client component needed.
+  prefers-reduced-motion.
 */
 
 const montserrat = Montserrat({
@@ -21,12 +24,39 @@ const montserrat = Montserrat({
   variable: "--font-nav",
 });
 
+const TEXT = {
+  fr: {
+    eyebrow: "Réalisations",
+    heading: "Nos Installations Solaires Premium",
+    paragraph:
+      "Chaque toiture est un cas particulier : dimensionnement, orientation et intégration pensés projet par projet.",
+    cta: "Voir toutes nos réalisations",
+    ctaHref: "/realisations",
+  },
+  en: {
+    eyebrow: "Projects",
+    heading: "Our Premium Solar Installations",
+    paragraph:
+      "Every roof is a unique case: sizing, orientation and integration are considered project by project.",
+    cta: "See all our projects",
+    ctaHref: "/en/projects",
+  },
+  nl: {
+    eyebrow: "Projecten",
+    heading: "Onze Premium Zonne-installaties",
+    paragraph:
+      "Elk dak is een uniek geval: dimensionering, oriëntatie en integratie worden per project bekeken.",
+    cta: "Bekijk al onze projecten",
+    ctaHref: "/nl/projecten",
+  },
+};
+
 function Card({ project }) {
   return (
     <div className="group relative aspect-[3/4] w-[280px] shrink-0 overflow-hidden rounded-3xl border border-[#F5EFE3]/10 sm:w-[330px] lg:w-[380px]">
       <Image
         src={project.image}
-        alt={`${project.title} — ${project.location}`}
+        alt={`${project.title}, ${project.location}`}
         fill
         sizes="(min-width: 1024px) 380px, (min-width: 640px) 330px, 280px"
         className="object-cover transition-transform duration-700 ease-out group-hover:scale-105"
@@ -68,6 +98,11 @@ function Card({ project }) {
 }
 
 export default function InstallationsSection() {
+  const locale = useLocale();
+  const t = TEXT[locale];
+  const projects =
+    locale === "en" ? PROJECTS_EN : locale === "nl" ? PROJECTS_NL : PROJECTS;
+
   return (
     <section
       id="realisations"
@@ -77,21 +112,20 @@ export default function InstallationsSection() {
       <div className="mx-auto max-w-[1600px] px-6 sm:px-10 lg:px-14">
         <span className="inline-flex w-fit items-center gap-2 rounded-full border border-[#F2A93B]/25 bg-[#F2A93B]/10 px-4 py-1.5 text-[10px] font-semibold uppercase tracking-[0.2em] text-[#F2A93B] sm:text-[11px]">
           <span className="h-1.5 w-1.5 rounded-full bg-[#F2A93B]" />
-          Réalisations
+          {t.eyebrow}
         </span>
         <h2 className="mt-6 max-w-xl text-[clamp(1.9rem,3vw+1rem,3rem)] font-semibold leading-[1.15] tracking-tight text-[#F5EFE3]">
-          Nos Installations Solaires Premium
+          {t.heading}
         </h2>
         <p className="mt-4 max-w-md text-base leading-relaxed text-[#A69C88]">
-          Chaque toiture est un cas particulier — dimensionnement,
-          orientation et intégration pensés projet par projet.
+          {t.paragraph}
         </p>
 
         <a
-          href="/realisations"
+          href={t.ctaHref}
           className="group mt-7 inline-flex w-fit items-center gap-2.5 rounded-full border border-[#F5EFE3]/25 px-6 py-3 text-sm font-semibold text-[#F5EFE3] transition-colors duration-200 hover:border-[#F2A93B]/50 hover:text-[#F2A93B]"
         >
-          Voir toutes nos réalisations
+          {t.cta}
           <svg width="14" height="14" viewBox="0 0 14 14" fill="none" className="transition-transform duration-200 group-hover:translate-x-0.5">
             <path
               d="M2 7H12M12 7L8 3M12 7L8 11"
@@ -115,10 +149,10 @@ export default function InstallationsSection() {
         }}
       >
         <div className="ysp-marquee-track flex w-max gap-5 px-6 sm:gap-6 sm:px-10 lg:px-14">
-          {PROJECTS.map((project) => (
+          {projects.map((project) => (
             <Card key={`a-${project.title}`} project={project} />
           ))}
-          {PROJECTS.map((project) => (
+          {projects.map((project) => (
             <Card key={`b-${project.title}`} project={project} />
           ))}
         </div>

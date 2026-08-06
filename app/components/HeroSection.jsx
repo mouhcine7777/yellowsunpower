@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { Montserrat } from "next/font/google";
 import { useQuoteModal } from "./QuoteModalContext";
+import { useLocale } from "../lib/locale";
 
 /*
   Design tokens — YellowSun Power hero
@@ -14,7 +15,7 @@ import { useQuoteModal } from "./QuoteModalContext";
 
   Signature: a large soft sun-disc glow bleeding off the top-right corner,
   ringed by slow-rotating dashed orbit lines, with a small cluster of
-  glass stat cards catching its light. Locked to 100dvh so it always
+  glass stat cards catching its light. Locked to 100svh so it always
   fills exactly one screen, on any device, without scrolling.
 */
 
@@ -24,16 +25,67 @@ const montserrat = Montserrat({
   variable: "--font-nav",
 });
 
-const stats = [
-  { value: "300+", label: "jours de soleil / an au Maroc" },
-  { value: "70%", label: "d'économie possible sur la facture" },
-  { value: "25 ans", label: "de garantie panneaux" },
-];
+const TEXT = {
+  fr: {
+    eyebrow: "Énergie solaire · Maroc",
+    headlineA: "Votre facture d’électricité",
+    headlineB: "a un ennemi.",
+    headlineC: "Il se lève chaque matin.",
+    paragraph:
+      "YellowSun Power conçoit et installe des panneaux solaires sur-mesure pour les foyers et entreprises marocaines.",
+    ctaPrimary: "Demander mon devis gratuit",
+    ctaSecondary: "Voir nos installations",
+    ctaSecondaryHref: "/realisations",
+    scrollCue: "Découvrir",
+    stats: [
+      { value: "300+", label: "jours de soleil / an au Maroc" },
+      { value: "70%", label: "d'économie possible sur la facture" },
+      { value: "25 ans", label: "de garantie panneaux" },
+    ],
+  },
+  en: {
+    eyebrow: "Solar energy · Morocco",
+    headlineA: "Your electricity bill",
+    headlineB: "has an enemy.",
+    headlineC: "It rises every morning.",
+    paragraph:
+      "YellowSun Power designs and installs custom solar panels for Moroccan homes and businesses.",
+    ctaPrimary: "Request my free quote",
+    ctaSecondary: "See our installations",
+    ctaSecondaryHref: "/en/projects",
+    scrollCue: "Discover",
+    stats: [
+      { value: "300+", label: "sunny days a year in Morocco" },
+      { value: "70%", label: "possible savings on your bill" },
+      { value: "25 years", label: "warranty on panels" },
+    ],
+  },
+  nl: {
+    eyebrow: "Zonne-energie · Marokko",
+    headlineA: "Uw elektriciteitsrekening",
+    headlineB: "heeft een vijand.",
+    headlineC: "Ze komt elke ochtend op.",
+    paragraph:
+      "YellowSun Power ontwerpt en installeert zonnepanelen op maat voor Marokkaanse huishoudens en bedrijven.",
+    ctaPrimary: "Vraag mijn gratis offerte aan",
+    ctaSecondary: "Bekijk onze installaties",
+    ctaSecondaryHref: "/nl/projecten",
+    scrollCue: "Ontdekken",
+    stats: [
+      { value: "300+", label: "zonnige dagen per jaar in Marokko" },
+      { value: "70%", label: "mogelijke besparing op uw factuur" },
+      { value: "25 jaar", label: "garantie op panelen" },
+    ],
+  },
+};
 
 export default function HeroSection() {
   const { openModal } = useQuoteModal();
+  const locale = useLocale();
+  const t = TEXT[locale];
   return (
     <section
+      id="accueil"
       className={`${montserrat.variable} font-[family-name:var(--font-nav)] relative isolate h-[100svh] w-full overflow-hidden bg-[#14120F]`}
     >
       {/* Background photo */}
@@ -70,30 +122,20 @@ export default function HeroSection() {
       <div className="relative z-10 mx-auto flex h-full w-full max-w-[1600px] flex-col justify-between px-6 pb-7 pt-24 sm:px-10 sm:pb-9 sm:pt-28 lg:px-14 lg:pb-10 lg:pt-32">
         {/* Middle: eyebrow + headline + CTAs */}
         <div className="flex flex-1 flex-col items-center justify-center gap-5 text-center sm:items-start sm:text-left lg:max-w-2xl">
-          <span
-            className="inline-flex w-fit items-center gap-2 rounded-full border border-[#F2A93B]/30 bg-[#F2A93B]/10 px-4 py-1.5 text-[10px] font-semibold uppercase tracking-[0.2em] text-[#F2A93B] sm:text-[11px]"
-
-          >
+          <span className="inline-flex w-fit items-center gap-2 rounded-full border border-[#F2A93B]/30 bg-[#F2A93B]/10 px-4 py-1.5 text-[10px] font-semibold uppercase tracking-[0.2em] text-[#F2A93B] sm:text-[11px]">
             <span className="h-1.5 w-1.5 rounded-full bg-[#F2A93B]" />
-            Énergie solaire · Maroc
+            {t.eyebrow}
           </span>
 
-          <h1
-            className="text-[clamp(1.75rem,3.2vw+1rem,3.4rem)] font-medium leading-[1.1] tracking-tight text-[#F5EFE3]"
-            
-          >
-            Votre facture d&rsquo;électricité
+          <h1 className="text-[clamp(1.75rem,3.2vw+1rem,3.4rem)] font-medium leading-[1.1] tracking-tight text-[#F5EFE3]">
+            {t.headlineA}
             <br />
-            a un ennemi.{" "}
-            <span className="text-[#F2A93B]">Il se lève chaque matin.</span>
+            {t.headlineB}{" "}
+            <span className="text-[#F2A93B]">{t.headlineC}</span>
           </h1>
 
-          <p
-            className="max-w-md text-base leading-relaxed text-[#A69C88] sm:text-lg"
-            
-          >
-            YellowSun Power conçoit et installe des panneaux solaires
-            sur-mesure pour les foyers et entreprises marocaines.
+          <p className="max-w-md text-base leading-relaxed text-[#A69C88] sm:text-lg">
+            {t.paragraph}
           </p>
 
           <div className="flex flex-wrap items-center justify-center gap-3 sm:justify-start sm:gap-4">
@@ -102,14 +144,13 @@ export default function HeroSection() {
               onClick={openModal}
               className="rounded-full bg-[#F2A93B] px-6 py-3 text-sm font-semibold text-[#14120F] transition-colors duration-200 hover:bg-[#C6660B] sm:px-7 sm:py-3.5"
             >
-              Demander mon devis gratuit
+              {t.ctaPrimary}
             </button>
             <a
-              href="/realisations"
+              href={t.ctaSecondaryHref}
               className="rounded-full border border-[#F5EFE3]/25 px-6 py-3 text-sm font-semibold text-[#F5EFE3] transition-colors duration-200 hover:border-[#F5EFE3]/60 sm:px-7 sm:py-3.5"
-              
             >
-              Voir nos installations
+              {t.ctaSecondary}
             </a>
           </div>
         </div>
@@ -117,18 +158,12 @@ export default function HeroSection() {
         {/* Bottom row: inline stats + scroll cue */}
         <div className="flex flex-col items-center gap-6 sm:items-stretch">
           <div className="hidden flex-wrap gap-x-8 gap-y-2 sm:flex xl:hidden">
-            {stats.map((stat) => (
+            {t.stats.map((stat) => (
               <div key={stat.label} className="flex items-baseline gap-2">
-                <span
-                  className="text-lg font-semibold text-[#F2A93B] sm:text-xl"
-                  
-                >
+                <span className="text-lg font-semibold text-[#F2A93B] sm:text-xl">
                   {stat.value}
                 </span>
-                <span
-                  className="text-[11px] text-[#A69C88] sm:text-xs"
-                  
-                >
+                <span className="text-[11px] text-[#A69C88] sm:text-xs">
                   {stat.label}
                 </span>
               </div>
@@ -136,11 +171,8 @@ export default function HeroSection() {
           </div>
 
           <div className="flex items-center gap-3 self-center text-[#A69C88] sm:self-start">
-            <span
-              className="text-[10px] uppercase tracking-[0.2em]"
-              
-            >
-              Découvrir
+            <span className="text-[10px] uppercase tracking-[0.2em]">
+              {t.scrollCue}
             </span>
             <svg
               width="14"
@@ -164,31 +196,19 @@ export default function HeroSection() {
       {/* Floating glass cards — large screens only, catching the glow */}
       <div className="pointer-events-none absolute right-14 top-1/2 z-10 hidden -translate-y-1/2 flex-col gap-4 xl:flex">
         <div className="w-52 rounded-2xl border border-white/10 bg-white/5 px-5 py-4 shadow-2xl backdrop-blur-md">
-          <p
-            className="text-2xl font-semibold text-[#F5EFE3]"
-            
-          >
-            300+
+          <p className="text-2xl font-semibold text-[#F5EFE3]">
+            {t.stats[0].value}
           </p>
-          <p
-            className="mt-1 text-xs text-[#A69C88]"
-            
-          >
-            jours de soleil par an au Maroc
+          <p className="mt-1 text-xs text-[#A69C88]">
+            {t.stats[0].label}
           </p>
         </div>
         <div className="ml-10 w-52 rounded-2xl border border-white/10 bg-white/5 px-5 py-4 shadow-2xl backdrop-blur-md">
-          <p
-            className="text-2xl font-semibold text-[#F5EFE3]"
-            
-          >
-            25 ans
+          <p className="text-2xl font-semibold text-[#F5EFE3]">
+            {t.stats[2].value}
           </p>
-          <p
-            className="mt-1 text-xs text-[#A69C88]"
-            
-          >
-            de garantie sur les panneaux
+          <p className="mt-1 text-xs text-[#A69C88]">
+            {t.stats[2].label}
           </p>
         </div>
       </div>

@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { Montserrat } from "next/font/google";
 import { useQuoteModal } from "./QuoteModalContext";
+import { useLocale } from "../lib/locale";
 
 /*
   Footer — YellowSun Power
@@ -23,20 +24,10 @@ const montserrat = Montserrat({
   variable: "--font-nav",
 });
 
-const NAV_LINKS = [
-  { label: "Accueil", href: "/#accueil" },
-  { label: "Solutions", href: "/solutions" },
-  { label: "Réalisations", href: "/realisations" },
-  { label: "À propos", href: "/a-propos" },
-  { label: "Contact", href: "/contact" },
-];
-
-const SOLUTIONS = ["Villas", "Riads", "Hôtels", "Professionnels"];
-
 const SOCIALS = [
   {
     label: "Instagram",
-    href: "#",
+    href: "https://www.instagram.com/yellowsun.power/",
     icon: (
       <path
         d="M7 3h10a4 4 0 0 1 4 4v10a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4V7a4 4 0 0 1 4-4Zm5 5.5a3.5 3.5 0 1 0 0 7 3.5 3.5 0 0 0 0-7Zm4.6-1.9a.9.9 0 1 0 0 1.8.9.9 0 0 0 0-1.8Z"
@@ -48,7 +39,7 @@ const SOCIALS = [
   },
   {
     label: "Facebook",
-    href: "#",
+    href: "https://www.facebook.com/profile.php?id=61593046018677",
     icon: (
       <path
         d="M14 9h2.5V6H14c-1.7 0-3 1.3-3 3v2H9v3h2v7h3v-7h2.3l.5-3H14V9c0-.4.3-1 1-1Z"
@@ -60,23 +51,104 @@ const SOCIALS = [
     ),
   },
   {
-    label: "LinkedIn",
-    href: "#",
+    label: "TikTok",
+    href: "https://www.tiktok.com/@yellowsun.power",
     icon: (
       <path
-        d="M6.5 9.5v9M6.5 6.6v.1M11 18.5v-5.2c0-1.8 1.2-3 2.8-3 1.5 0 2.7 1.1 2.7 3v5.2M11 12v6.5"
+        d="M13.3 3h2.7c.2 1.8 1.5 3.3 3.3 3.6v2.7c-1.2 0-2.3-.3-3.3-.9v6c0 2.9-2.4 5.3-5.3 5.3S5.4 17.3 5.4 14.4s2.4-5.3 5.3-5.3c.3 0 .6 0 .9.1v2.8c-.3-.1-.6-.2-.9-.2-1.5 0-2.6 1.2-2.6 2.6s1.2 2.6 2.6 2.6 2.6-1.2 2.6-2.6V3Z"
         stroke="currentColor"
-        strokeWidth="1.4"
-        strokeLinecap="round"
-        strokeLinejoin="round"
+        strokeWidth="1.2"
         fill="none"
+        strokeLinejoin="round"
+      />
+    ),
+  },
+  {
+    label: "Snapchat",
+    href: "https://www.snapchat.com/@yellowsun.power",
+    icon: (
+      <path
+        d="M12 3.5c2.6 0 4.3 1.9 4.4 4.3.1 1.1 0 2 .1 2.6.1.2.4.5 1.2.8.5.2 1.3.4 1.3.9 0 .5-.6.8-1 .9-.3.1-.6.4-.5.7.2.7.8 1.3 1.9 1.6.2.1.3.3.3.5-.2.6-1.1.7-1.8.8-.2.1-.3.2-.4.4-.1.3-.1.5-.3.8-.3.4-.8.3-1.3.3-.6 0-1.1.1-1.6.4-.6.4-1.2 1-2.4 1s-1.8-.6-2.4-1c-.5-.3-1-.4-1.6-.4-.5 0-1 .1-1.3-.3-.2-.3-.2-.5-.3-.8-.1-.2-.2-.3-.4-.4-.7-.1-1.6-.2-1.8-.8 0-.2.1-.4.3-.5 1.1-.3 1.7-.9 1.9-1.6.1-.3-.2-.6-.5-.7-.4-.1-1-.4-1-.9 0-.5.8-.7 1.3-.9.8-.3 1.1-.6 1.2-.8.1-.6 0-1.5.1-2.6.1-2.4 1.8-4.3 4.4-4.3Z"
+        stroke="currentColor"
+        strokeWidth="1.2"
+        fill="none"
+        strokeLinejoin="round"
       />
     ),
   },
 ];
 
+const TEXT = {
+  fr: {
+    navLinks: [
+      { label: "Accueil", href: "/#accueil" },
+      { label: "Solutions", href: "/solutions" },
+      { label: "Réalisations", href: "/realisations" },
+      { label: "À propos", href: "/a-propos" },
+      { label: "Contact", href: "/contact" },
+    ],
+    solutions: ["Villas", "Riads", "Hôtels", "Professionnels"],
+    solutionsHref: "/solutions",
+    eyebrow: "Passons à l’étape suivante",
+    heading: "Prêt à faire de votre toit une source d’économies ?",
+    cta: "Demander mon devis gratuit",
+    brandDesc:
+      "Installations photovoltaïques premium pour villas, riads, hôtels et professionnels au Maroc.",
+    navHeading: "Navigation",
+    solutionsHeading: "Solutions",
+    contactHeading: "Contact",
+    country: "Maroc",
+    rights: "Tous droits réservés.",
+  },
+  en: {
+    navLinks: [
+      { label: "Home", href: "/en#accueil" },
+      { label: "Solutions", href: "/en/solutions" },
+      { label: "Projects", href: "/en/projects" },
+      { label: "About", href: "/en/about" },
+      { label: "Contact", href: "/en/contact" },
+    ],
+    solutions: ["Villas", "Riads", "Hotels", "Professionals"],
+    solutionsHref: "/en/solutions",
+    eyebrow: "Let’s take the next step",
+    heading: "Ready to turn your roof into a source of savings?",
+    cta: "Request my free quote",
+    brandDesc:
+      "Premium photovoltaic installations for villas, riads, hotels and businesses across Morocco.",
+    navHeading: "Navigation",
+    solutionsHeading: "Solutions",
+    contactHeading: "Contact",
+    country: "Morocco",
+    rights: "All rights reserved.",
+  },
+  nl: {
+    navLinks: [
+      { label: "Home", href: "/nl#accueil" },
+      { label: "Oplossingen", href: "/nl/oplossingen" },
+      { label: "Projecten", href: "/nl/projecten" },
+      { label: "Over ons", href: "/nl/over-ons" },
+      { label: "Contact", href: "/nl/contact" },
+    ],
+    solutions: ["Villa's", "Riads", "Hotels", "Bedrijven"],
+    solutionsHref: "/nl/oplossingen",
+    eyebrow: "Laten we de volgende stap zetten",
+    heading: "Klaar om van uw dak een bron van besparingen te maken?",
+    cta: "Vraag mijn gratis offerte aan",
+    brandDesc:
+      "Premium fotovoltaïsche installaties voor villa's, riads, hotels en bedrijven in heel Marokko.",
+    navHeading: "Navigatie",
+    solutionsHeading: "Oplossingen",
+    contactHeading: "Contact",
+    country: "Marokko",
+    rights: "Alle rechten voorbehouden.",
+  },
+};
+
 export default function Footer() {
   const { openModal } = useQuoteModal();
+  const locale = useLocale();
+  const t = TEXT[locale];
+
   return (
     <footer
       id="contact"
@@ -91,10 +163,10 @@ export default function Footer() {
           <div>
             <span className="inline-flex w-fit items-center gap-2 rounded-full border border-[#F2A93B]/25 bg-[#F2A93B]/10 px-4 py-1.5 text-[10px] font-semibold uppercase tracking-[0.2em] text-[#F2A93B] sm:text-[11px]">
               <span className="h-1.5 w-1.5 rounded-full bg-[#F2A93B]" />
-              Passons à l&rsquo;étape suivante
+              {t.eyebrow}
             </span>
             <h2 className="mt-5 max-w-lg text-[clamp(1.7rem,2.8vw+1rem,2.8rem)] font-semibold leading-[1.15] tracking-tight text-[#F5EFE3]">
-              Prêt à faire de votre toit une source d&rsquo;économies ?
+              {t.heading}
             </h2>
           </div>
 
@@ -103,7 +175,7 @@ export default function Footer() {
             onClick={openModal}
             className="inline-flex w-fit shrink-0 items-center gap-2.5 rounded-full bg-[#F2A93B] px-7 py-3.5 text-sm font-semibold text-[#14120F] transition-colors duration-200 hover:bg-[#C6660B]"
           >
-            Demander mon devis gratuit
+            {t.cta}
             <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
               <path
                 d="M2 7H12M12 7L8 3M12 7L8 11"
@@ -130,14 +202,15 @@ export default function Footer() {
               />
             </span>
             <p className="mt-5 max-w-xs text-sm leading-relaxed text-[#A69C88]">
-              Installations photovoltaïques premium pour villas, riads,
-              hôtels et professionnels au Maroc.
+              {t.brandDesc}
             </p>
             <div className="mt-6 flex items-center gap-3">
               {SOCIALS.map((social) => (
                 <a
                   key={social.label}
                   href={social.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
                   aria-label={social.label}
                   className="flex h-9 w-9 items-center justify-center rounded-full border border-[#F5EFE3]/15 text-[#A69C88] transition-colors duration-200 hover:border-[#F2A93B]/40 hover:text-[#F2A93B]"
                 >
@@ -152,10 +225,10 @@ export default function Footer() {
           {/* Navigation */}
           <div>
             <p className="text-xs font-semibold uppercase tracking-[0.15em] text-[#F5EFE3]/50">
-              Navigation
+              {t.navHeading}
             </p>
             <ul className="mt-5 flex flex-col gap-3">
-              {NAV_LINKS.map((link) => (
+              {t.navLinks.map((link) => (
                 <li key={link.href}>
                   <a
                     href={link.href}
@@ -171,13 +244,13 @@ export default function Footer() {
           {/* Solutions */}
           <div>
             <p className="text-xs font-semibold uppercase tracking-[0.15em] text-[#F5EFE3]/50">
-              Solutions
+              {t.solutionsHeading}
             </p>
             <ul className="mt-5 flex flex-col gap-3">
-              {SOLUTIONS.map((label) => (
+              {t.solutions.map((label) => (
                 <li key={label}>
                   <a
-                    href="/solutions"
+                    href={t.solutionsHref}
                     className="text-sm text-[#A69C88] transition-colors duration-200 hover:text-[#F2A93B]"
                   >
                     {label}
@@ -190,7 +263,7 @@ export default function Footer() {
           {/* Contact */}
           <div>
             <p className="text-xs font-semibold uppercase tracking-[0.15em] text-[#F5EFE3]/50">
-              Contact
+              {t.contactHeading}
             </p>
             <ul className="mt-5 flex flex-col gap-3.5 text-sm text-[#A69C88]">
               <li>
@@ -234,7 +307,7 @@ export default function Footer() {
                     strokeLinejoin="round"
                   />
                 </svg>
-                Maroc
+                {t.country}
               </li>
             </ul>
           </div>
@@ -252,7 +325,7 @@ export default function Footer() {
 
       {/* Bottom bar */}
       <div className="relative mx-auto flex max-w-[1600px] flex-col items-center justify-center gap-4 border-t border-[#F5EFE3]/10 px-6 py-6 text-xs text-[#A69C88] sm:px-10 lg:px-14">
-        <p>© {new Date().getFullYear()} YellowSun Power. Tous droits réservés.</p>
+        <p>© {new Date().getFullYear()} YellowSun Power. {t.rights}</p>
       </div>
     </footer>
   );

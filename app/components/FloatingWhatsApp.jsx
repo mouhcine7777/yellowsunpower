@@ -1,5 +1,7 @@
 "use client";
 
+import { useLocale } from "../lib/locale";
+
 /*
   Floating WhatsApp button — YellowSun Power
   Fixed bottom-right on every page, opens WhatsApp with a pre-filled
@@ -9,18 +11,36 @@
 */
 
 const WHATSAPP_NUMBER = "212649139720";
-const MESSAGE =
-  "Bonjour YellowSun Power, je souhaite obtenir une étude gratuite pour une installation solaire.";
+
+const TEXT = {
+  fr: {
+    message:
+      "Bonjour YellowSun Power, je souhaite obtenir une étude gratuite pour une installation solaire.",
+    label: "Contacter YellowSun Power sur WhatsApp",
+  },
+  en: {
+    message:
+      "Hello YellowSun Power, I would like to get a free assessment for a solar installation.",
+    label: "Contact YellowSun Power on WhatsApp",
+  },
+  nl: {
+    message:
+      "Hallo YellowSun Power, ik zou graag een gratis onderzoek willen voor een zonne-installatie.",
+    label: "Neem contact op met YellowSun Power via WhatsApp",
+  },
+};
 
 export default function FloatingWhatsApp() {
-  const href = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(MESSAGE)}`;
+  const locale = useLocale();
+  const t = TEXT[locale];
+  const href = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(t.message)}`;
 
   return (
     <a
       href={href}
       target="_blank"
       rel="noopener noreferrer"
-      aria-label="Contacter YellowSun Power sur WhatsApp"
+      aria-label={t.label}
       className="ysp-whatsapp-fab fixed bottom-5 right-5 z-40 flex h-14 w-14 items-center justify-center rounded-full bg-[#25D366] text-white shadow-[0_8px_24px_rgba(0,0,0,0.35)] transition-transform duration-200 hover:scale-110 sm:bottom-7 sm:right-7"
     >
       <span className="ysp-whatsapp-ping pointer-events-none absolute inset-0 rounded-full bg-[#25D366]" />

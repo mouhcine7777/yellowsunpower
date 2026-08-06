@@ -2,23 +2,16 @@
 
 import { useState } from "react";
 import { Montserrat } from "next/font/google";
-import StickyMenu from "../components/StickyMenu";
-import Footer from "../components/Footer";
-import QuoteModal from "../components/QuoteModal";
-import { QuoteModalProvider, useQuoteModal } from "../components/QuoteModalContext";
+import StickyMenu from "../../components/StickyMenu";
+import Footer from "../../components/Footer";
+import QuoteModal from "../../components/QuoteModal";
+import { QuoteModalProvider, useQuoteModal } from "../../components/QuoteModalContext";
 
 /*
-  Contact — YellowSun Power
-  Same token family as the rest of the site: charcoal #14120F, gold
-  #F2A93B, amber #C6660B, paper #F5EFE3, stone #A69C88, ink-soft
-  #6B6355, hairline #E4DCC8.
-
-  Two distinct paths, kept deliberately separate: a short general
-  message form here (for anyone who just has a question, not a full
-  project brief) sent via WhatsApp like the rest of the site's forms,
-  and a link back to the full quote intake (QuoteModal) for anyone
-  ready to request an actual estimate — reusing that form instead of
-  duplicating its budget/equipment fields here.
+  Contact — YellowSun Power (Dutch mirror of app/contact/page.tsx)
+  Same two paths as the French/English versions: a short general
+  message form sent via WhatsApp, and a link back to the full quote
+  intake (QuoteModal) for anyone ready to request an actual estimate.
 */
 
 const montserrat = Montserrat({
@@ -31,7 +24,7 @@ const WHATSAPP_NUMBER = "212649139720";
 
 const CHANNELS = [
   {
-    label: "Téléphone",
+    label: "Telefoon",
     value: "+212 649-139720",
     href: "tel:+212649139720",
     icon: (
@@ -81,7 +74,7 @@ function QuoteLinkCTA() {
       onClick={openModal}
       className="inline-flex w-fit items-center gap-2.5 rounded-full border border-[#F5EFE3]/25 px-6 py-3 text-sm font-semibold text-[#F5EFE3] transition-colors duration-200 hover:border-[#F2A93B]/50 hover:text-[#F2A93B]"
     >
-      Demander un devis détaillé
+      Vraag een gedetailleerde offerte aan
       <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
         <path
           d="M2 7H12M12 7L8 3M12 7L8 11"
@@ -102,9 +95,9 @@ function ContactForm() {
 
   const validate = () => {
     const next: Record<string, string> = {};
-    if (!form.name.trim()) next.name = "Indiquez votre nom.";
-    if (!form.contact.trim()) next.contact = "Indiquez un email ou un téléphone.";
-    if (!form.message.trim()) next.message = "Écrivez votre message.";
+    if (!form.name.trim()) next.name = "Vul uw naam in.";
+    if (!form.contact.trim()) next.contact = "Vul een e-mailadres of telefoonnummer in.";
+    if (!form.message.trim()) next.message = "Schrijf uw bericht.";
     setErrors(next);
     return Object.keys(next).length === 0;
   };
@@ -114,10 +107,10 @@ function ContactForm() {
     if (!validate()) return;
 
     const lines = [
-      "Nouveau message depuis le site",
-      `Nom : ${form.name}`,
-      `Contact : ${form.contact}`,
-      `Message : ${form.message}`,
+      "Nieuw bericht van de website",
+      `Naam: ${form.name}`,
+      `Contact: ${form.contact}`,
+      `Bericht: ${form.message}`,
     ];
     const url = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(lines.join("\n"))}`;
     window.open(url, "_blank", "noopener,noreferrer");
@@ -132,10 +125,9 @@ function ContactForm() {
             <path d="M4 12.5L9.5 18L20 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
           </svg>
         </span>
-        <p className="text-lg font-semibold text-[#F5EFE3]">Message envoyé</p>
+        <p className="text-lg font-semibold text-[#F5EFE3]">Bericht verzonden</p>
         <p className="text-sm leading-relaxed text-[#A69C88]">
-          Votre message a été transmis sur WhatsApp. Nous vous répondons
-          sous 48h.
+          Uw bericht is via WhatsApp verzonden. Wij reageren binnen 48u.
         </p>
         <button
           type="button"
@@ -145,7 +137,7 @@ function ContactForm() {
           }}
           className="mt-2 text-sm font-semibold text-[#F2A93B] hover:text-[#C6660B]"
         >
-          Envoyer un autre message
+          Nog een bericht sturen
         </button>
       </div>
     );
@@ -155,14 +147,14 @@ function ContactForm() {
     <form onSubmit={handleSubmit} className="flex flex-col gap-5">
       <div>
         <label htmlFor="ct-name" className="text-xs font-semibold uppercase tracking-[0.1em] text-[#F5EFE3]/80">
-          Nom complet
+          Volledige naam
         </label>
         <input
           id="ct-name"
           type="text"
           value={form.name}
           onChange={(e) => setForm((f) => ({ ...f, name: e.target.value }))}
-          placeholder="Votre nom et prénom"
+          placeholder="Uw voor- en achternaam"
           className="mt-2.5 w-full rounded-xl border border-white/15 bg-white/[0.03] px-4 py-2.5 text-sm text-[#F5EFE3] placeholder:text-[#A69C88]/60 outline-none transition-colors duration-150 focus:border-[#F2A93B]/60"
         />
         {errors.name && <p className="mt-1.5 text-xs text-[#E0664A]">{errors.name}</p>}
@@ -170,14 +162,14 @@ function ContactForm() {
 
       <div>
         <label htmlFor="ct-contact" className="text-xs font-semibold uppercase tracking-[0.1em] text-[#F5EFE3]/80">
-          Email ou téléphone
+          E-mail of telefoon
         </label>
         <input
           id="ct-contact"
           type="text"
           value={form.contact}
           onChange={(e) => setForm((f) => ({ ...f, contact: e.target.value }))}
-          placeholder="vous@email.com ou +212 6XX-XXXXXX"
+          placeholder="u@email.com of +212 6XX-XXXXXX"
           className="mt-2.5 w-full rounded-xl border border-white/15 bg-white/[0.03] px-4 py-2.5 text-sm text-[#F5EFE3] placeholder:text-[#A69C88]/60 outline-none transition-colors duration-150 focus:border-[#F2A93B]/60"
         />
         {errors.contact && <p className="mt-1.5 text-xs text-[#E0664A]">{errors.contact}</p>}
@@ -185,14 +177,14 @@ function ContactForm() {
 
       <div>
         <label htmlFor="ct-message" className="text-xs font-semibold uppercase tracking-[0.1em] text-[#F5EFE3]/80">
-          Message
+          Bericht
         </label>
         <textarea
           id="ct-message"
           rows={4}
           value={form.message}
           onChange={(e) => setForm((f) => ({ ...f, message: e.target.value }))}
-          placeholder="Comment pouvons-nous vous aider ?"
+          placeholder="Hoe kunnen we u helpen?"
           className="mt-2.5 w-full resize-none rounded-xl border border-white/15 bg-white/[0.03] px-4 py-2.5 text-sm text-[#F5EFE3] placeholder:text-[#A69C88]/60 outline-none transition-colors duration-150 focus:border-[#F2A93B]/60"
         />
         {errors.message && <p className="mt-1.5 text-xs text-[#E0664A]">{errors.message}</p>}
@@ -202,7 +194,7 @@ function ContactForm() {
         type="submit"
         className="mt-2 inline-flex w-fit items-center gap-2.5 rounded-full bg-[#F2A93B] px-6 py-3 text-sm font-semibold text-[#14120F] transition-colors duration-200 hover:bg-[#C6660B]"
       >
-        Envoyer le message
+        Bericht verzenden
         <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
           <path d="M2 7H12M12 7L8 3M12 7L8 11" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
         </svg>
@@ -211,7 +203,7 @@ function ContactForm() {
   );
 }
 
-export default function ContactPage() {
+export default function ContactPageNL() {
   return (
     <QuoteModalProvider>
       <main className={`${montserrat.variable} font-[family-name:var(--font-nav)]`}>
@@ -228,13 +220,13 @@ export default function ContactPage() {
             </div>
 
             <h1 className="mt-6 max-w-2xl text-[clamp(2rem,3.4vw+1rem,3.6rem)] font-medium leading-[1.1] tracking-tight text-[#F5EFE3]">
-              Parlons de votre projet.
+              Laten we over uw project praten.
             </h1>
 
             <p className="mt-6 max-w-xl text-base leading-relaxed text-[#F5EFE3]/70 sm:text-lg">
-              Une question, un projet en tête, ou simplement envie d&rsquo;en
-              savoir plus&nbsp;? Notre équipe vous répond sous 48h,
-              où que vous soyez au Maroc.
+              Een vraag, een project in gedachten, of gewoon nieuwsgierig
+              om meer te weten&nbsp;? Ons team reageert binnen 48u, waar u
+              zich ook bevindt in Marokko.
             </p>
           </div>
         </section>
@@ -283,19 +275,19 @@ export default function ContactPage() {
                   </svg>
                   <div>
                     <p className="text-sm font-semibold text-[#F5EFE3]">
-                      Zone d&rsquo;intervention
+                      Werkgebied
                     </p>
                     <p className="mt-1 text-sm leading-relaxed text-[#A69C88]">
-                      Intervention partout au Maroc : étude technique
-                      gratuite quel que soit votre emplacement.
+                      Service overal in Marokko: gratis technisch
+                      onderzoek, waar u zich ook bevindt.
                     </p>
                   </div>
                 </div>
 
                 <div className="mt-8 border-t border-white/10 pt-8">
                   <p className="text-sm leading-relaxed text-[#A69C88]">
-                    Un projet déjà en tête&nbsp;? Passez directement par
-                    notre formulaire de devis détaillé.
+                    Heeft u al een project in gedachten&nbsp;? Ga direct
+                    naar ons gedetailleerde offerteformulier.
                   </p>
                   <div className="mt-4">
                     <QuoteLinkCTA />
@@ -306,14 +298,14 @@ export default function ContactPage() {
               {/* Right: general message form */}
               <div className="rounded-3xl border border-white/10 bg-white/[0.02] p-6 sm:p-8">
                 <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[#F2A93B]">
-                  Un message
+                  Een bericht
                 </p>
                 <h2 className="mt-3 text-xl font-semibold text-[#F5EFE3] sm:text-2xl">
-                  Écrivez-nous
+                  Schrijf ons
                 </h2>
                 <p className="mt-2 text-sm leading-relaxed text-[#A69C88]">
-                  Pour une question générale, le formulaire est transmis
-                  directement sur WhatsApp.
+                  Voor een algemene vraag wordt het formulier direct via
+                  WhatsApp verzonden.
                 </p>
                 <div className="mt-8">
                   <ContactForm />
