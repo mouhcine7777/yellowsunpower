@@ -33,6 +33,7 @@ const TEXT = {
     headlineC: "Il se lève chaque matin.",
     paragraph:
       "YellowSun Power conçoit et installe des panneaux solaires sur-mesure pour les foyers et entreprises marocaines.",
+    savings: "Jusqu’à 70% d’économie sur votre facture.",
     ctaPrimary: "Demander mon devis gratuit",
     ctaSecondary: "Voir nos installations",
     ctaSecondaryHref: "/realisations",
@@ -50,6 +51,7 @@ const TEXT = {
     headlineC: "It rises every morning.",
     paragraph:
       "YellowSun Power designs and installs custom solar panels for Moroccan homes and businesses.",
+    savings: "Up to 70% savings on your electricity bill.",
     ctaPrimary: "Request my free quote",
     ctaSecondary: "See our installations",
     ctaSecondaryHref: "/en/projects",
@@ -67,6 +69,7 @@ const TEXT = {
     headlineC: "Ze komt elke ochtend op.",
     paragraph:
       "YellowSun Power ontwerpt en installeert zonnepanelen op maat voor Marokkaanse huishoudens en bedrijven.",
+    savings: "Tot 70% besparing op uw elektriciteitsrekening.",
     ctaPrimary: "Vraag mijn gratis offerte aan",
     ctaSecondary: "Bekijk onze installaties",
     ctaSecondaryHref: "/nl/projecten",
@@ -136,6 +139,10 @@ export default function HeroSection() {
 
           <p className="max-w-md text-base leading-relaxed text-[#A69C88] sm:text-lg">
             {t.paragraph}
+          </p>
+
+          <p className="text-[clamp(1.15rem,1.1vw+0.9rem,1.4rem)] font-bold leading-snug text-[#F2A93B] lg:whitespace-nowrap">
+            {t.savings}
           </p>
 
           <div className="flex flex-wrap items-center justify-center gap-3 sm:justify-start sm:gap-4">
