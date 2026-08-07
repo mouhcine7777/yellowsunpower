@@ -11,17 +11,20 @@ import { useLocale } from "../lib/locale";
   Same dark token family: ink #14120F, gold #F2A93B, paper #F5EFE3,
   stone #A69C88.
 
-  Desktop/tablet: a continuous auto-scrolling filmstrip. Three copies
-  of the card list sit back to back and the track animates by exactly
-  one copy's width (-33.333%), so it loops forever no matter how few
-  projects there are. Pauses on hover/focus.
+  A single auto-scrolling filmstrip, on every breakpoint including
+  mobile: it drives the wrapper's native scrollLeft itself (rAF loop)
+  rather than a CSS keyframe transform, so the exact same scroll
+  position is shared between "auto" and "manual" modes — no jump when
+  switching. The moment the user actually interacts (touch, drag,
+  wheel), auto-scroll stops for good and it becomes a normal
+  swipeable/scrollable strip; on desktop, hovering still pauses it
+  temporarily like before, without disabling auto-scroll permanently.
 
-  Mobile: the same three copies, but user-swipeable instead of
-  auto-scrolling. The scroller starts on the middle copy, and a
-  scroll listener silently snaps back by one copy's width whenever
-  the user swipes into the first or third copy — so with only a
-  handful of projects it still loops instead of running out and
-  stopping dead.
+  Three copies of the card list sit back to back and a scroll listener
+  silently snaps back by one copy's width whenever the edge of the
+  first or third copy is reached, so it loops forever regardless of
+  whether the position is being driven automatically or by the user,
+  even with only a handful of projects.
 */
 
 const montserrat = Montserrat({
@@ -29,6 +32,8 @@ const montserrat = Montserrat({
   weight: ["500", "600", "700", "800"],
   variable: "--font-nav",
 });
+
+const AUTO_SCROLL_DURATION_MS = 72000; // time to scroll exactly one copy's width
 
 const TEXT = {
   fr: {
@@ -59,7 +64,7 @@ const TEXT = {
 
 function Card({ project }) {
   return (
-    <div className="group relative aspect-[3/4] w-[280px] shrink-0 snap-start overflow-hidden rounded-3xl border border-[#F5EFE3]/10 sm:w-[330px] sm:snap-align-none lg:w-[380px]">
+    <div className="group relative aspect-[3/4] w-[280px] shrink-0 overflow-hidden rounded-3xl border border-[#F5EFE3]/10 sm:w-[330px] lg:w-[380px]">
       <Image
         src={project.image}
         alt={`${project.title}, ${project.location}`}
@@ -111,27 +116,76 @@ export default function InstallationsSection() {
 
   const wrapperRef = useRef(null);
 
-  // Mobile swipe loop: start on the middle copy, and silently snap
-  // back by one copy's width whenever the user swipes into the first
-  // or third copy, so it never dead-ends even with few projects.
   useEffect(() => {
     const wrapper = wrapperRef.current;
     if (!wrapper) return;
-    if (getComputedStyle(wrapper).overflowX !== "auto") return;
+
+    const prefersReduced = window.matchMedia(
+      "(prefers-reduced-motion: reduce)"
+    ).matches;
 
     const setWidth = wrapper.scrollWidth / 3;
     wrapper.scrollLeft = setWidth;
 
-    const onScroll = () => {
+    // Keep the position inside the middle copy no matter what's
+    // driving scrollLeft — the rAF loop below, or the user.
+    const wrapBoundaries = () => {
       if (wrapper.scrollLeft <= 0) {
         wrapper.scrollLeft += setWidth;
       } else if (wrapper.scrollLeft >= setWidth * 2) {
         wrapper.scrollLeft -= setWidth;
       }
     };
+    wrapper.addEventListener("scroll", wrapBoundaries, { passive: true });
 
-    wrapper.addEventListener("scroll", onScroll, { passive: true });
-    return () => wrapper.removeEventListener("scroll", onScroll);
+    let autoScroll = !prefersReduced;
+    let hoverPaused = false;
+    let rafId = null;
+    let lastTime = null;
+    const pxPerMs = setWidth / AUTO_SCROLL_DURATION_MS;
+
+    const tick = (time) => {
+      if (!autoScroll) {
+        rafId = null;
+        return;
+      }
+      if (lastTime !== null) {
+        const dt = time - lastTime;
+        if (!hoverPaused) {
+          wrapper.scrollLeft += pxPerMs * dt;
+        }
+      }
+      lastTime = time;
+      rafId = requestAnimationFrame(tick);
+    };
+    if (autoScroll) rafId = requestAnimationFrame(tick);
+
+    // Any deliberate scroll gesture switches to manual for good.
+    const stopAutoScroll = () => {
+      autoScroll = false;
+      if (rafId) cancelAnimationFrame(rafId);
+    };
+    const onPointerDown = (e) => {
+      if (e.pointerType !== "mouse") stopAutoScroll();
+    };
+
+    wrapper.addEventListener("pointerdown", onPointerDown, { passive: true });
+    wrapper.addEventListener("wheel", stopAutoScroll, { passive: true });
+    wrapper.addEventListener("mouseenter", () => {
+      hoverPaused = true;
+    });
+    wrapper.addEventListener("mouseleave", () => {
+      hoverPaused = false;
+    });
+    wrapper.addEventListener("mousedown", stopAutoScroll);
+
+    return () => {
+      if (rafId) cancelAnimationFrame(rafId);
+      wrapper.removeEventListener("scroll", wrapBoundaries);
+      wrapper.removeEventListener("pointerdown", onPointerDown);
+      wrapper.removeEventListener("wheel", stopAutoScroll);
+      wrapper.removeEventListener("mousedown", stopAutoScroll);
+    };
   }, [projects]);
 
   return (
@@ -169,10 +223,10 @@ export default function InstallationsSection() {
         </a>
       </div>
 
-      {/* Filmstrip — user-swipeable + looping on mobile, auto-scrolling from sm up */}
+      {/* Filmstrip — auto-scrolls until touched/dragged, then becomes manual */}
       <div
         ref={wrapperRef}
-        className="ysp-marquee-wrapper relative mt-14 w-full overflow-x-auto sm:overflow-hidden"
+        className="ysp-marquee-wrapper relative mt-14 w-full overflow-x-auto"
         style={{
           WebkitOverflowScrolling: "touch",
           WebkitMaskImage:
@@ -181,7 +235,7 @@ export default function InstallationsSection() {
             "linear-gradient(to right, transparent 0, black 5%, black 95%, transparent 100%)",
         }}
       >
-        <div className="ysp-marquee-track flex w-max snap-x snap-mandatory gap-5 px-6 sm:snap-none sm:gap-6 sm:px-10 lg:px-14">
+        <div className="ysp-marquee-track flex w-max gap-5 px-6 sm:gap-6 sm:px-10 lg:px-14">
           {projects.map((project) => (
             <Card key={`a-${project.title}`} project={project} />
           ))}
@@ -201,24 +255,6 @@ export default function InstallationsSection() {
         }
         .ysp-marquee-wrapper::-webkit-scrollbar {
           display: none;
-        }
-        @keyframes ysp-marquee {
-          from { transform: translateX(0); }
-          to { transform: translateX(-33.3333%); }
-        }
-        @media (min-width: 640px) {
-          .ysp-marquee-track {
-            animation: ysp-marquee 72s linear infinite;
-          }
-          .ysp-marquee-wrapper:hover .ysp-marquee-track,
-          .ysp-marquee-wrapper:focus-within .ysp-marquee-track {
-            animation-play-state: paused;
-          }
-        }
-        @media (prefers-reduced-motion: reduce) {
-          .ysp-marquee-track {
-            animation: none;
-          }
         }
       `}</style>
     </section>
