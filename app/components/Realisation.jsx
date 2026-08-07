@@ -11,20 +11,20 @@ import { useLocale } from "../lib/locale";
   Same dark token family: ink #14120F, gold #F2A93B, paper #F5EFE3,
   stone #A69C88.
 
-  A single auto-scrolling filmstrip, on every breakpoint including
-  mobile: it drives the wrapper's native scrollLeft itself (rAF loop)
-  rather than a CSS keyframe transform, so the exact same scroll
-  position is shared between "auto" and "manual" modes — no jump when
-  switching. The moment the user actually interacts (touch, drag,
-  wheel), auto-scroll stops for good and it becomes a normal
-  swipeable/scrollable strip; on desktop, hovering still pauses it
-  temporarily like before, without disabling auto-scroll permanently.
+  Auto-scrolls via a plain CSS transform animation on every breakpoint
+  (reliable everywhere, including real iOS Safari — a JS/rAF-driven
+  scrollLeft loop does not animate consistently there). Desktop pauses
+  it on hover, like before.
 
-  Three copies of the card list sit back to back and a scroll listener
-  silently snaps back by one copy's width whenever the edge of the
-  first or third copy is reached, so it loops forever regardless of
-  whether the position is being driven automatically or by the user,
-  even with only a handful of projects.
+  On mobile, the very first touch converts it to a normal swipeable
+  strip: we read the track's current animated position, freeze it in
+  place, and hand off to native scrollLeft starting from that exact
+  spot — no visual jump — then the CSS animation is gone for good and
+  it's fully manual from there.
+
+  Three copies of the card list sit back to back either way, so
+  whether it's animating via CSS or being scrolled by hand, it loops
+  forever instead of dead-ending, even with just a few projects.
 */
 
 const montserrat = Montserrat({
@@ -32,8 +32,6 @@ const montserrat = Montserrat({
   weight: ["500", "600", "700", "800"],
   variable: "--font-nav",
 });
-
-const AUTO_SCROLL_DURATION_MS = 72000; // time to scroll exactly one copy's width
 
 const TEXT = {
   fr: {
@@ -115,77 +113,53 @@ export default function InstallationsSection() {
     locale === "en" ? PROJECTS_EN : locale === "nl" ? PROJECTS_NL : PROJECTS;
 
   const wrapperRef = useRef(null);
+  const trackRef = useRef(null);
 
   useEffect(() => {
     const wrapper = wrapperRef.current;
-    if (!wrapper) return;
+    const track = trackRef.current;
+    if (!wrapper || !track) return;
 
-    const prefersReduced = window.matchMedia(
-      "(prefers-reduced-motion: reduce)"
-    ).matches;
+    let converted = false;
 
-    const setWidth = wrapper.scrollWidth / 3;
-    wrapper.scrollLeft = setWidth;
+    const convertToManualScroll = () => {
+      if (converted) return;
+      converted = true;
 
-    // Keep the position inside the middle copy no matter what's
-    // driving scrollLeft — the rAF loop below, or the user.
-    const wrapBoundaries = () => {
-      if (wrapper.scrollLeft <= 0) {
-        wrapper.scrollLeft += setWidth;
-      } else if (wrapper.scrollLeft >= setWidth * 2) {
-        wrapper.scrollLeft -= setWidth;
-      }
-    };
-    wrapper.addEventListener("scroll", wrapBoundaries, { passive: true });
-
-    let autoScroll = !prefersReduced;
-    let hoverPaused = false;
-    let rafId = null;
-    let lastTime = null;
-    const pxPerMs = setWidth / AUTO_SCROLL_DURATION_MS;
-
-    const tick = (time) => {
-      if (!autoScroll) {
-        rafId = null;
-        return;
-      }
-      if (lastTime !== null) {
-        const dt = time - lastTime;
-        if (!hoverPaused) {
-          wrapper.scrollLeft += pxPerMs * dt;
+      // Read the track's current animated position so freezing it
+      // and handing off to native scroll causes no visual jump.
+      let tx = 0;
+      const transform = getComputedStyle(track).transform;
+      if (transform && transform !== "none") {
+        const match = transform.match(/matrix\(([^)]+)\)/);
+        if (match) {
+          const parts = match[1].split(",").map((n) => parseFloat(n));
+          tx = parts[4] || 0;
         }
       }
-      lastTime = time;
-      rafId = requestAnimationFrame(tick);
-    };
-    if (autoScroll) rafId = requestAnimationFrame(tick);
 
-    // Any deliberate scroll gesture switches to manual for good.
-    const stopAutoScroll = () => {
-      autoScroll = false;
-      if (rafId) cancelAnimationFrame(rafId);
-    };
-    const onPointerDown = (e) => {
-      if (e.pointerType !== "mouse") stopAutoScroll();
+      track.style.animation = "none";
+      track.style.transform = "none";
+      wrapper.style.overflowX = "auto";
+      wrapper.style.WebkitOverflowScrolling = "touch";
+      wrapper.scrollLeft = -tx;
+
+      const setWidth = wrapper.scrollWidth / 3;
+      const wrapBoundaries = () => {
+        if (wrapper.scrollLeft <= 0) {
+          wrapper.scrollLeft += setWidth;
+        } else if (wrapper.scrollLeft >= setWidth * 2) {
+          wrapper.scrollLeft -= setWidth;
+        }
+      };
+      wrapper.addEventListener("scroll", wrapBoundaries, { passive: true });
     };
 
-    wrapper.addEventListener("pointerdown", onPointerDown, { passive: true });
-    wrapper.addEventListener("wheel", stopAutoScroll, { passive: true });
-    wrapper.addEventListener("mouseenter", () => {
-      hoverPaused = true;
+    wrapper.addEventListener("touchstart", convertToManualScroll, {
+      passive: true,
     });
-    wrapper.addEventListener("mouseleave", () => {
-      hoverPaused = false;
-    });
-    wrapper.addEventListener("mousedown", stopAutoScroll);
-
-    return () => {
-      if (rafId) cancelAnimationFrame(rafId);
-      wrapper.removeEventListener("scroll", wrapBoundaries);
-      wrapper.removeEventListener("pointerdown", onPointerDown);
-      wrapper.removeEventListener("wheel", stopAutoScroll);
-      wrapper.removeEventListener("mousedown", stopAutoScroll);
-    };
+    return () =>
+      wrapper.removeEventListener("touchstart", convertToManualScroll);
   }, [projects]);
 
   return (
@@ -223,19 +197,21 @@ export default function InstallationsSection() {
         </a>
       </div>
 
-      {/* Filmstrip — auto-scrolls until touched/dragged, then becomes manual */}
+      {/* Filmstrip — auto-scrolls until touched, then becomes manual */}
       <div
         ref={wrapperRef}
-        className="ysp-marquee-wrapper relative mt-14 w-full overflow-x-auto"
+        className="ysp-marquee-wrapper relative mt-14 w-full overflow-hidden"
         style={{
-          WebkitOverflowScrolling: "touch",
           WebkitMaskImage:
             "linear-gradient(to right, transparent 0, black 5%, black 95%, transparent 100%)",
           maskImage:
             "linear-gradient(to right, transparent 0, black 5%, black 95%, transparent 100%)",
         }}
       >
-        <div className="ysp-marquee-track flex w-max gap-5 px-6 sm:gap-6 sm:px-10 lg:px-14">
+        <div
+          ref={trackRef}
+          className="ysp-marquee-track flex w-max gap-5 px-6 sm:gap-6 sm:px-10 lg:px-14"
+        >
           {projects.map((project) => (
             <Card key={`a-${project.title}`} project={project} />
           ))}
@@ -255,6 +231,22 @@ export default function InstallationsSection() {
         }
         .ysp-marquee-wrapper::-webkit-scrollbar {
           display: none;
+        }
+        @keyframes ysp-marquee {
+          from { transform: translateX(0); }
+          to { transform: translateX(-33.3333%); }
+        }
+        .ysp-marquee-track {
+          animation: ysp-marquee 72s linear infinite;
+        }
+        .ysp-marquee-wrapper:hover .ysp-marquee-track,
+        .ysp-marquee-wrapper:focus-within .ysp-marquee-track {
+          animation-play-state: paused;
+        }
+        @media (prefers-reduced-motion: reduce) {
+          .ysp-marquee-track {
+            animation: none;
+          }
         }
       `}</style>
     </section>
