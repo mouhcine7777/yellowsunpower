@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import { useEffect, useRef } from "react";
 import { Montserrat } from "next/font/google";
 import { PROJECTS, PROJECTS_EN, PROJECTS_NL } from "../data/projects";
 import { useLocale } from "../lib/locale";
@@ -10,12 +11,17 @@ import { useLocale } from "../lib/locale";
   Same dark token family: ink #14120F, gold #F2A93B, paper #F5EFE3,
   stone #A69C88.
 
-  Signature: a continuous auto-scrolling filmstrip, full-bleed edge to
-  edge. Cards are duplicated once so the loop is seamless (translating
-  exactly -50% of track width returns to the starting frame). Pauses
-  on hover/focus so it's actually readable, fades at both edges via a
-  mask so cards never crop hard against the viewport, and respects
-  prefers-reduced-motion.
+  Desktop/tablet: a continuous auto-scrolling filmstrip. Three copies
+  of the card list sit back to back and the track animates by exactly
+  one copy's width (-33.333%), so it loops forever no matter how few
+  projects there are. Pauses on hover/focus.
+
+  Mobile: the same three copies, but user-swipeable instead of
+  auto-scrolling. The scroller starts on the middle copy, and a
+  scroll listener silently snaps back by one copy's width whenever
+  the user swipes into the first or third copy — so with only a
+  handful of projects it still loops instead of running out and
+  stopping dead.
 */
 
 const montserrat = Montserrat({
@@ -51,9 +57,9 @@ const TEXT = {
   },
 };
 
-function Card({ project, className = "" }) {
+function Card({ project }) {
   return (
-    <div className={`group relative aspect-[3/4] w-[280px] shrink-0 overflow-hidden rounded-3xl border border-[#F5EFE3]/10 sm:w-[330px] lg:w-[380px] ${className}`}>
+    <div className="group relative aspect-[3/4] w-[280px] shrink-0 snap-start overflow-hidden rounded-3xl border border-[#F5EFE3]/10 sm:w-[330px] sm:snap-align-none lg:w-[380px]">
       <Image
         src={project.image}
         alt={`${project.title}, ${project.location}`}
@@ -103,6 +109,31 @@ export default function InstallationsSection() {
   const projects =
     locale === "en" ? PROJECTS_EN : locale === "nl" ? PROJECTS_NL : PROJECTS;
 
+  const wrapperRef = useRef(null);
+
+  // Mobile swipe loop: start on the middle copy, and silently snap
+  // back by one copy's width whenever the user swipes into the first
+  // or third copy, so it never dead-ends even with few projects.
+  useEffect(() => {
+    const wrapper = wrapperRef.current;
+    if (!wrapper) return;
+    if (getComputedStyle(wrapper).overflowX !== "auto") return;
+
+    const setWidth = wrapper.scrollWidth / 3;
+    wrapper.scrollLeft = setWidth;
+
+    const onScroll = () => {
+      if (wrapper.scrollLeft <= 0) {
+        wrapper.scrollLeft += setWidth;
+      } else if (wrapper.scrollLeft >= setWidth * 2) {
+        wrapper.scrollLeft -= setWidth;
+      }
+    };
+
+    wrapper.addEventListener("scroll", onScroll, { passive: true });
+    return () => wrapper.removeEventListener("scroll", onScroll);
+  }, [projects]);
+
   return (
     <section
       id="realisations"
@@ -138,8 +169,9 @@ export default function InstallationsSection() {
         </a>
       </div>
 
-      {/* Filmstrip — user-swipeable on mobile, auto-scrolling from sm up */}
+      {/* Filmstrip — user-swipeable + looping on mobile, auto-scrolling from sm up */}
       <div
+        ref={wrapperRef}
         className="ysp-marquee-wrapper relative mt-14 w-full overflow-x-auto sm:overflow-hidden"
         style={{
           WebkitOverflowScrolling: "touch",
@@ -151,12 +183,13 @@ export default function InstallationsSection() {
       >
         <div className="ysp-marquee-track flex w-max snap-x snap-mandatory gap-5 px-6 sm:snap-none sm:gap-6 sm:px-10 lg:px-14">
           {projects.map((project) => (
-            <div key={`a-${project.title}`} className="snap-start sm:snap-align-none">
-              <Card project={project} />
-            </div>
+            <Card key={`a-${project.title}`} project={project} />
           ))}
           {projects.map((project) => (
-            <Card key={`b-${project.title}`} project={project} className="hidden sm:block" />
+            <Card key={`b-${project.title}`} project={project} />
+          ))}
+          {projects.map((project) => (
+            <Card key={`c-${project.title}`} project={project} />
           ))}
         </div>
       </div>
@@ -171,11 +204,11 @@ export default function InstallationsSection() {
         }
         @keyframes ysp-marquee {
           from { transform: translateX(0); }
-          to { transform: translateX(-50%); }
+          to { transform: translateX(-33.3333%); }
         }
         @media (min-width: 640px) {
           .ysp-marquee-track {
-            animation: ysp-marquee 48s linear infinite;
+            animation: ysp-marquee 72s linear infinite;
           }
           .ysp-marquee-wrapper:hover .ysp-marquee-track,
           .ysp-marquee-wrapper:focus-within .ysp-marquee-track {
