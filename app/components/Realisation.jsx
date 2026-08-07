@@ -51,9 +51,9 @@ const TEXT = {
   },
 };
 
-function Card({ project }) {
+function Card({ project, className = "" }) {
   return (
-    <div className="group relative aspect-[3/4] w-[280px] shrink-0 overflow-hidden rounded-3xl border border-[#F5EFE3]/10 sm:w-[330px] lg:w-[380px]">
+    <div className={`group relative aspect-[3/4] w-[280px] shrink-0 overflow-hidden rounded-3xl border border-[#F5EFE3]/10 sm:w-[330px] lg:w-[380px] ${className}`}>
       <Image
         src={project.image}
         alt={`${project.title}, ${project.location}`}
@@ -138,37 +138,49 @@ export default function InstallationsSection() {
         </a>
       </div>
 
-      {/* Auto-scrolling filmstrip — full bleed */}
+      {/* Filmstrip — user-swipeable on mobile, auto-scrolling from sm up */}
       <div
-        className="ysp-marquee-wrapper relative mt-14 w-full"
+        className="ysp-marquee-wrapper relative mt-14 w-full overflow-x-auto sm:overflow-hidden"
         style={{
+          WebkitOverflowScrolling: "touch",
           WebkitMaskImage:
             "linear-gradient(to right, transparent 0, black 5%, black 95%, transparent 100%)",
           maskImage:
             "linear-gradient(to right, transparent 0, black 5%, black 95%, transparent 100%)",
         }}
       >
-        <div className="ysp-marquee-track flex w-max gap-5 px-6 sm:gap-6 sm:px-10 lg:px-14">
+        <div className="ysp-marquee-track flex w-max snap-x snap-mandatory gap-5 px-6 sm:snap-none sm:gap-6 sm:px-10 lg:px-14">
           {projects.map((project) => (
-            <Card key={`a-${project.title}`} project={project} />
+            <div key={`a-${project.title}`} className="snap-start sm:snap-align-none">
+              <Card project={project} />
+            </div>
           ))}
           {projects.map((project) => (
-            <Card key={`b-${project.title}`} project={project} />
+            <Card key={`b-${project.title}`} project={project} className="hidden sm:block" />
           ))}
         </div>
       </div>
 
       <style>{`
+        .ysp-marquee-wrapper {
+          scrollbar-width: none;
+          -ms-overflow-style: none;
+        }
+        .ysp-marquee-wrapper::-webkit-scrollbar {
+          display: none;
+        }
         @keyframes ysp-marquee {
           from { transform: translateX(0); }
           to { transform: translateX(-50%); }
         }
-        .ysp-marquee-track {
-          animation: ysp-marquee 48s linear infinite;
-        }
-        .ysp-marquee-wrapper:hover .ysp-marquee-track,
-        .ysp-marquee-wrapper:focus-within .ysp-marquee-track {
-          animation-play-state: paused;
+        @media (min-width: 640px) {
+          .ysp-marquee-track {
+            animation: ysp-marquee 48s linear infinite;
+          }
+          .ysp-marquee-wrapper:hover .ysp-marquee-track,
+          .ysp-marquee-wrapper:focus-within .ysp-marquee-track {
+            animation-play-state: paused;
+          }
         }
         @media (prefers-reduced-motion: reduce) {
           .ysp-marquee-track {
