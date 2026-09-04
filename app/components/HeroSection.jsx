@@ -122,26 +122,26 @@ export default function HeroSection() {
       />
 
       {/* Content */}
-      <div className="relative z-10 mx-auto flex h-full w-full max-w-[1600px] flex-col justify-between px-6 pb-7 pt-24 sm:px-10 sm:pb-9 sm:pt-28 lg:px-14 lg:pb-10 lg:pt-32">
+      <div className="relative z-10 mx-auto flex h-full w-full max-w-[1600px] flex-col justify-between overflow-y-auto px-6 pb-7 pt-24 sm:px-10 sm:pb-9 sm:pt-28 lg:px-14 lg:pb-8 lg:pt-28">
         {/* Middle: eyebrow + headline + CTAs */}
-        <div className="flex flex-1 flex-col items-center justify-center gap-5 text-center sm:items-start sm:text-left lg:max-w-2xl">
+        <div className="flex flex-1 flex-col items-center justify-center gap-4 text-center sm:items-start sm:text-left lg:max-w-2xl lg:gap-4">
           <span className="inline-flex w-fit items-center gap-2 rounded-full border border-[#F2A93B]/30 bg-[#F2A93B]/10 px-4 py-1.5 text-[10px] font-semibold uppercase tracking-[0.2em] text-[#F2A93B] sm:text-[11px]">
             <span className="h-1.5 w-1.5 rounded-full bg-[#F2A93B]" />
             {t.eyebrow}
           </span>
 
-          <h1 className="text-[clamp(1.75rem,3.2vw+1rem,3.4rem)] font-medium leading-[1.1] tracking-tight text-[#F5EFE3]">
+          <h1 className="text-[clamp(1.75rem,2.6vw+1rem,2.9rem)] font-medium leading-[1.1] tracking-tight text-[#F5EFE3]">
             {t.headlineA}
             <br />
             {t.headlineB}{" "}
             <span className="text-[#F2A93B]">{t.headlineC}</span>
           </h1>
 
-          <p className="max-w-md text-base leading-relaxed text-[#A69C88] sm:text-lg">
+          <p className="max-w-md text-sm leading-relaxed text-[#A69C88] sm:text-base">
             {t.paragraph}
           </p>
 
-          <p className="text-[clamp(1.15rem,1.1vw+0.9rem,1.4rem)] font-bold leading-snug text-[#F2A93B] lg:whitespace-nowrap">
+          <p className="ysp-shine-text text-[clamp(1.35rem,1.8vw+1rem,1.85rem)] font-extrabold leading-tight tracking-tight">
             {t.savings}
           </p>
 
@@ -219,6 +219,35 @@ export default function HeroSection() {
           </p>
         </div>
       </div>
+
+      <style>{`
+        .ysp-shine-text {
+          background-image: linear-gradient(
+            100deg,
+            #C6660B 20%,
+            #F2A93B 40%,
+            #FFF3D0 50%,
+            #F2A93B 60%,
+            #C6660B 80%
+          );
+          background-size: 250% 100%;
+          background-clip: text;
+          -webkit-background-clip: text;
+          color: transparent;
+          filter: drop-shadow(0 0 14px rgba(242, 169, 59, 0.45));
+          animation: ysp-shine 5s linear infinite;
+        }
+        @keyframes ysp-shine {
+          from { background-position: 200% 0; }
+          to { background-position: -50% 0; }
+        }
+        @media (prefers-reduced-motion: reduce) {
+          .ysp-shine-text {
+            animation: none;
+            background-position: 50% 0;
+          }
+        }
+      `}</style>
     </section>
   );
 }

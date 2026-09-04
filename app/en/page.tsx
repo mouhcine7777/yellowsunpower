@@ -4,6 +4,7 @@
 // intentionally identical in structure to app/page.tsx.
 import StickyMenu from "../components/StickyMenu";
 import HeroSection from "../components/HeroSection";
+import TvFeature from "../components/TvFeature";
 import AboutSection from "../components/AboutSection";
 import Realisation from "../components/Realisation";
 import Fournisseurs from "../components/Fournisseurs";
@@ -17,6 +18,7 @@ export default function HomeEN() {
       <main>
         <StickyMenu />
         <HeroSection />
+        <TvFeature />
         <AboutSection />
         <Realisation />
         <Fournisseurs />
